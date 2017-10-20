@@ -9,6 +9,7 @@ requires = [
     'celery==4.1.0',
     'requests==2.18.4',
     'redis==2.10.6',
+    'BeautifulSoup==3.2.1',
 ]
 
 test_requires = [
