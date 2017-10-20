@@ -3,7 +3,7 @@
 import time
 import json
 import logging
-from uspto.pbd.tasks import download
+from uspto.pair.tasks import download
 
 logger = logging.getLogger(__name__)
 
