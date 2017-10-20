@@ -137,22 +137,35 @@ class UsptoPairClient:
 
         query_id = response['queryId']
 
-        self.request_package(query_id, 'XML')
-        self.wait_for_package(query_id, 'XML')
+        # Which formats are requested?
+        if 'format' not in query:
+            do_xml = True
+            do_json = True
+        else:
+            formats = to_list(query['format'])
+            do_xml = 'xml' in formats
+            do_json = 'json' in formats
 
-        self.request_package(query_id, 'JSON')
-        self.wait_for_package(query_id, 'JSON')
+        # Acquisition
+        if do_xml:
+            self.request_package(query_id, 'XML')
+            self.wait_for_package(query_id, 'XML')
 
-        package_zip = self.download_package(query_id, 'XML')
-        payload_xml = self.unzip_package(package_zip)
+        if do_json:
+            self.request_package(query_id, 'JSON')
+            self.wait_for_package(query_id, 'JSON')
 
-        package_zip = self.download_package(query_id, 'JSON')
-        payload_json = self.unzip_package(package_zip)
+        # Download
+        result = {}
+        if do_xml:
+            package_zip = self.download_package(query_id, 'XML')
+            payload_xml = self.unzip_package(package_zip)
+            result['xml'] = payload_xml.decode('utf-8')
 
-        result = {
-            'xml': payload_xml.decode('utf-8'),
-            'json': json.loads(payload_json),
-        }
+        if do_json:
+            package_zip = self.download_package(query_id, 'JSON')
+            payload_json = self.unzip_package(package_zip)
+            result['json'] = json.loads(payload_json)
 
         return result
 
@@ -171,13 +184,21 @@ def download_and_print(**query):
     print()
 
 
+def to_list(obj):
+    """Convert an object to a list if it is not already one"""
+    # stolen from cornice.util
+    if not isinstance(obj, (list, tuple)):
+        obj = [obj, ]
+    return obj
+
+
 if __name__ == '__main__':
 
     logging.basicConfig(level=logging.INFO)
 
     # Published applications by publication number
     # US2017293197A1: appEarlyPubNumber:(2017/0293197)
-    #download_and_print(publication='2017/0293197')
+    download_and_print(publication='2017/0293197')
     #download_and_print(publication='2017-0293197')
     #download_and_print(publication='20170293197')  # No results
 

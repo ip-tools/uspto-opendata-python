@@ -10,6 +10,8 @@ requires = [
     'requests==2.18.4',
     'redis==2.10.6',
     'beautifulsoup4==4.6.0',
+    'docopt==0.6.2',
+    'pathvalidate==0.16.2',
 ]
 
 test_requires = [
@@ -67,6 +69,7 @@ setup(name='uspto-opendata-pair',
 
       entry_points={
         'console_scripts': [
+            'pairclient = uspto.pair.commands:run',
         ],
       },
 

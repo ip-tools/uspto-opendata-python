@@ -25,21 +25,37 @@ Create Python virtualenv::
 
     virtualenv --no-site-packages .venv27
 
-
-Run
-===
-
-Run examples::
+Setup in development mode:
 
     # Activate virtualenv
     source .venv27/bin/activate
 
-    # Directly access the API
-    python uspto/pair/api.py
+    # Install Python package
+    python setup.py develop
 
 
+Run
+===
+
+Prepare::
+
+    # Activate virtualenv
+    source .venv27/bin/activate
+
+Run some example acquisitions::
+
+    # Download published application by publication number in XML format
+    pairclient get "2017/0293197" --type=publication --format=xml
+
+    # ... same in JSON format, with pretty-printing
+    pairclient get "2017/0293197" --type=publication --format=json --pretty
+
+    # Download published application by application number
+    pairclient get "15431686" --type=application --format=xml
 
 .. note::
+    # Download granted patent by patent number
+    pairclient get "PP28532" --type=patent --format=xml
 
     uspto-opendata-pair is prepared to use Celery_ as a task queue for scheduling
     downloads in parallel. Please refer to the `taskqueue documentation`_.
