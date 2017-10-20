@@ -7,7 +7,7 @@ import logging
 import pathvalidate
 from docopt import docopt, DocoptExit
 from uspto.pair.api import UsptoPairClient
-from version import __VERSION__
+from uspto.pair.version import __VERSION__
 
 APP_NAME = 'pairclient ' + __VERSION__
 
@@ -66,7 +66,7 @@ def run():
 
     # Pre-flight checks
     if options.get('save'):
-        directory = options.get('--directory', os.path.curdir)
+        directory = options.get('--directory') or os.path.curdir
         filename = pathvalidate.sanitize_filename('{name}.{suffix}'.format(name=document_number.upper(), suffix=document_format.lower()))
         filepath = os.path.join(directory, filename)
         if os.path.exists(filepath):
@@ -81,14 +81,15 @@ def run():
     # Prettify result payload
     if options.get('--pretty'):
         if document_format == 'json':
-            payload = json.dumps(payload, indent=4)
+            payload = json.dumps(json.loads(payload), indent=4)
 
     # Operation mode: Print to STDOUT or save to filesystem
     if options.get('get'):
         print(payload)
 
     elif options.get('save'):
-        file(filepath, 'w').write(payload)
+        open(filepath, 'w').write(payload)
+        logger.info('Saved document to {}'.format(filepath))
 
 
 def boot_logging(options=None):

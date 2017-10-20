@@ -5,6 +5,10 @@ USPTO PAIR Bulk Data API Client CHANGES
 development
 ===========
 
+2017-10-20 0.2.1
+================
+- Minor fixes and Python3 compatibility
+
 2017-10-20 0.2.0
 ================
 - Python3 compatibility

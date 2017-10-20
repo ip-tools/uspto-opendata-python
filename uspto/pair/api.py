@@ -165,7 +165,7 @@ class UsptoPairClient:
         if do_json:
             package_zip = self.download_package(query_id, 'JSON')
             payload_json = self.unzip_package(package_zip)
-            result['json'] = json.loads(payload_json)
+            result['json'] = payload_json.decode('utf-8')
 
         return result
 
