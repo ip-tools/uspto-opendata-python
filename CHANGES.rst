@@ -4,6 +4,9 @@ USPTO PAIR Bulk Data API Client CHANGES
 
 development
 ===========
+
+2017-10-20 0.2.0
+================
 - Python3 compatibility
 - Add commandline program "pairclient" for printing and saving documents
 
