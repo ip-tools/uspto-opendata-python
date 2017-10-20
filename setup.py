@@ -17,7 +17,7 @@ test_requires = [
 
 setup(name='uspto-opendata-pair',
       version='0.0.0',
-      description='uspto-opendata-pair   is a client for accessing the USPTO PAIR Bulk Data API',
+      description='uspto-opendata-pair is a client for accessing the USPTO PAIR Bulk Data API (PBD)',
       long_description=README,
       license="MIT",
       classifiers=[
@@ -46,7 +46,7 @@ setup(name='uspto-opendata-pair',
       author='Andreas Motl',
       author_email='andreas@ip-tools.org',
       url='https://github.com/ip-tools/uspto-opendata-pair',
-      keywords='patent information research search',
+      keywords='uspto pair opendata bulk data download patent information research search',
       packages=find_packages(),
       include_package_data=True,
       package_data={
@@ -56,6 +56,9 @@ setup(name='uspto-opendata-pair',
       install_requires=requires,
       tests_require=test_requires,
       extras_require={
+          'release': [
+              'bumpversion==0.5.3',
+          ],
           'documentation': [
               'Sphinx==1.6.4',
               'sphinx_rtd_theme==0.2.5b1',
