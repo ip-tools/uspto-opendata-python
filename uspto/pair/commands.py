@@ -51,6 +51,9 @@ def run():
         # Download granted patent by patent number
         pairclient get "PP28532" --type=patent --format=xml
 
+        # Download granted patent by patent number and save to /var/spool/uspto-pair/PP28532.xml
+        pairclient save "PP28532" --type=patent --format=xml --directory=/var/spool/uspto-pair
+
     """
     options = docopt(run.__doc__, version=APP_NAME)
     #print('options: {}'.format(options))

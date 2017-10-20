@@ -25,7 +25,7 @@ Create Python virtualenv::
 
     virtualenv --no-site-packages .venv27
 
-Setup in development mode:
+Setup in development mode::
 
     # Activate virtualenv
     source .venv27/bin/activate
@@ -34,27 +34,49 @@ Setup in development mode:
     python setup.py develop
 
 
-Run
-===
+Synopsis
+========
+::
 
-Prepare::
+    $ pairclient --help
+        Usage:
+          pairclient get <document-number> --type=publication --format=xml [--pretty] [--debug]
+          pairclient save <document-number> --type=publication --format=xml [--pretty] [--directory=/var/spool/uspto-pair] [--overwrite] [--debug]
+          pairclient info
+          pairclient --version
+          pairclient (-h | --help)
 
-    # Activate virtualenv
-    source .venv27/bin/activate
+        Options:
+          --type=<type>             Document type, one of publication, application, patent
+          --format=<target>         Data format, one of xml, json
+          --pretty                  Pretty-print output data
+          --directory=<directory>   Save downloaded to documents to designated target directory
+          --overwrite               When saving documents, overwrite already existing documents
+          --debug                   Enable debug messages
+          --version                 Show version information
+          -h --help                 Show this screen
 
-Run some example acquisitions::
+        Operation modes:
 
-    # Download published application by publication number in XML format
-    pairclient get "2017/0293197" --type=publication --format=xml
+            "pairclient get ..." will download the document and print the result to STDOUT.
+            "pairclient save ..." will save the document to the designated target directory, defaulting to the current path.
 
-    # ... same in JSON format, with pretty-printing
-    pairclient get "2017/0293197" --type=publication --format=json --pretty
+        Examples:
 
-    # Download published application by application number
-    pairclient get "15431686" --type=application --format=xml
+            # Download published application by publication number in XML format
+            pairclient get "2017/0293197" --type=publication --format=xml
 
-    # Download granted patent by patent number
-    pairclient get "PP28532" --type=patent --format=xml
+            # ... same in JSON format, with pretty-printing
+            pairclient get "2017/0293197" --type=publication --format=json --pretty
+
+            # Download published application by application number
+            pairclient get "15431686" --type=application --format=xml
+
+            # Download granted patent by patent number
+            pairclient get "PP28532" --type=patent --format=xml
+
+            # Download granted patent by patent number and save to /var/spool/uspto-pair/PP28532.xml
+            pairclient save "PP28532" --type=patent --format=xml --directory=/var/spool/uspto-pair
 
 
 Asynchronous operation
