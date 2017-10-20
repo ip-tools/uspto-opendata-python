@@ -18,7 +18,7 @@ test_requires = [
 ]
 
 setup(name='uspto-opendata-pair',
-      version='0.1.0',
+      version='0.2.0',
       description='uspto-opendata-pair is a client for accessing the USPTO PAIR Bulk Data API (PBD)',
       long_description=README,
       license="MIT",
