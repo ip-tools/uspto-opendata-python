@@ -6,7 +6,7 @@ import logging
 import zipfile
 import requests
 from io import BytesIO
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +46,7 @@ class UsptoPairClient:
                 title = soup.find('title')
                 message = title.string.strip()
                 hr = soup.body.find('hr')
-                reason =  hr.nextSibling.string.strip()
+                reason =  hr.next_sibling.string.strip()
                 if reason:
                     message += '. ' + reason
                 message += ' (status={})'.format(response.status_code)
@@ -150,7 +150,7 @@ class UsptoPairClient:
         payload_json = self.unzip_package(package_zip)
 
         result = {
-            'xml': payload_xml,
+            'xml': payload_xml.decode('utf-8'),
             'json': json.loads(payload_json),
         }
 
