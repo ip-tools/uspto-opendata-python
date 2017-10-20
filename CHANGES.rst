@@ -4,6 +4,9 @@ USPTO PAIR Bulk Data API Client CHANGES
 
 development
 ===========
+
+2017-10-20 0.1.0
+================
 - Implement the basic query and download parts of the USPTO PAIR Bulk Data API
 - Implement Celery-based downloader infrastructure
 
