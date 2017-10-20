@@ -1,44 +1,61 @@
 # -*- coding: utf-8 -*-
 # (c) 2017 Andreas Motl <andreas@ip-tools.org>
-import time
-from celery import Celery
-from celery.result import GroupResult
-from celery.schedules import crontab
+import logging
+from celery import Celery, Task
 from celery.decorators import task
+from uspto.pbd.api import UsptoPbdClient
 
-app = Celery('uspto.pbd.tasks', backend='redis://localhost', broker='redis://localhost')
+celery_app = Celery('uspto.pbd.tasks', backend='redis://localhost', broker='redis://localhost')
 
-app.conf.update(
+celery_app.conf.update(
     task_serializer = 'pickle',
     result_serializer = 'pickle',
     accept_content = ['pickle'],
 )
 
-@task
-def submit_query(arg):
-    print('submit_query:', arg)
-    return '82917889-f8ec-4a5c-bf27-ddf7a3ed1e05'
-
-@task
-def request_package(query_id, arg):
-    print('request_package:', arg)
-    print('query id:', query_id)
-    return query_id
-
-@task
-def wait_for_package(query_id, arg):
-    print('wait_for_package:', arg)
-    time.sleep(10)
-    return query_id
-
-@task
-def download_package(query_id, arg):
-    print('download_package:', arg)
-    return 'BLOB'
+logger = logging.getLogger(__name__)
 
 @task
 def download(query):
     # https://celery.readthedocs.io/en/latest/userguide/canvas.html#chains
-    chain = submit_query.s(query) | request_package.s(query) | wait_for_package.s(query) | download_package.s(query)
-    result = chain()
-    return result
+    task = DownloadTask().delay(**query)
+    return task
+
+
+# http://shulhi.com/class-based-celery-task/
+class DownloadTask(Task):
+
+    name = 'uspto.pbd.tasks.DownloadTask'
+
+    def __init__(self, *args, **kwargs):
+        self.client = UsptoPbdClient()
+        self.database = kwargs.get('database', None)
+        self.host = kwargs.get('host', None)
+        self.result = None
+
+    # Main entry
+    def run(self, *args, **query):
+        self.download(**query)
+        self.finish()
+        return self.result
+
+    # Wrap the celery app within the Flask context
+    #def bind(self, app):
+    #    super(self.__class__, self).bind(self, celery_app)
+
+    def on_success(self, retval, task_id, *args, **kwargs):
+        logger.info('DownloadTask succeeded')
+
+    def on_failure(self, exc, task_id, args, kwargs, einfo):
+        logger.error('DownloadTask failed')
+        logger.error(exc)
+
+    def download(self, **query):
+        logger.info('Starting download job with %s', query)
+        self.update_state(state='PROGRESS', meta={'stage': 'downloading', 'query': query})
+        self.result = self.client.download(**query)
+
+    def finish(self):
+        self.update_state(state='PROGRESS', meta={'stage': 'finished', })
+
+celery_app.tasks.register(DownloadTask)
