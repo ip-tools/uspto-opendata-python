@@ -20,9 +20,6 @@ and its `API catalog`_ for other new API offers by the US Patent and Trademark O
 
 Setup
 =====
-Prepare directory for Redis and Celery::
-
-    mkdir -p var/lib
 
 Create Python virtualenv::
 
@@ -32,15 +29,6 @@ Create Python virtualenv::
 Run
 ===
 
-Run Redis server::
-
-    echo 'dir ./var/lib' | redis-server -
-
-Run Celery in a simple way embedding the beat scheduler inside the worker daemon::
-
-    # http://docs.celeryproject.org/en/latest/userguide/periodic-tasks.html#starting-the-scheduler
-    celery worker --app uspto.pair.tasks --beat --schedule-filename var/lib/celerybeat-schedule --loglevel=info
-
 Run examples::
 
     # Activate virtualenv
@@ -49,16 +37,23 @@ Run examples::
     # Directly access the API
     python uspto/pair/api.py
 
-    # Run download jobs over the Celery job queue
-    python uspto/pair/download.py
 
 
-Contribute
-==========
-If you’d like to contribute you’re most welcome!
+.. note::
+
+    uspto-opendata-pair is prepared to use Celery_ as a task queue for scheduling
+    downloads in parallel. Please refer to the `taskqueue documentation`_.
 
 
-License
-=======
+.. _taskqueue documentation: docs/taskqueue.rst
+
+
+Project Information
+===================
 ``uspto-opendata-pair`` is released under the MIT license,
 the code lives on `GitHub <https://github.com/ip-tools/uspto-opendata-pair>`_.
+
+It's tested on Python 2.7 and Python 3.6.
+
+If you’d like to contribute you’re most welcome!
+
