@@ -53,23 +53,30 @@ Run some example acquisitions::
     # Download published application by application number
     pairclient get "15431686" --type=application --format=xml
 
-.. note::
     # Download granted patent by patent number
     pairclient get "PP28532" --type=patent --format=xml
 
-    uspto-opendata-pair is prepared to use Celery_ as a task queue for scheduling
-    downloads in parallel. Please refer to the `taskqueue documentation`_.
 
+Asynchronous operation
+======================
+The software can also operate asynchronously by using Celery_
+as a task queue for scheduling downloads in the background.
+Please refer to the `taskqueue documentation`_.
 
+.. _Celery: https://celery.readthedocs.io/
 .. _taskqueue documentation: docs/taskqueue.rst
 
 
-Project Information
+Project information
 ===================
 ``uspto-opendata-pair`` is released under the MIT license,
 the code lives on `GitHub <https://github.com/ip-tools/uspto-opendata-pair>`_.
 
-It's tested on Python 2.7 and Python 3.6.
+The software is tested on Python 2.7 and Python 3.6.
 
 If you’d like to contribute you’re most welcome!
+Spend some time taking a look around, locate a bug, design issue or
+spelling mistake and then send us a pull request or create an issue.
+
+Thanks in advance for your efforts, we really appreciate any help or feedback.
 
