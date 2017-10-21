@@ -15,6 +15,7 @@ class UsptoGenericBulkDataClient:
 
     def __init__(self):
         self.session = requests.Session()
+        self.downloader = None
 
     def query(self, searchText, df='patentTitle'):
         logger.info('Querying for %s', searchText)

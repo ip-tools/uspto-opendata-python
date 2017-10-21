@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # (c) 2017 Andreas Motl <andreas@ip-tools.org>
 import os
-import sys
 import json
 import logging
 from docopt import docopt, DocoptExit
@@ -10,7 +9,7 @@ import uspto.celery                     # Must import here to enable communicati
 
 logger = logging.getLogger(__name__)
 
-def run_command(client, downloader, options):
+def run_command(client, options):
     """
     Usage:
       {program} get  <document-number> --type=publication --format=xml [--pretty] [--background] [--wait] [--debug]
@@ -41,6 +40,30 @@ def run_command(client, downloader, options):
     # Debugging
     #print('options: {}'.format(options))
 
+    document_number = options.get('<document-number>')
+    document_format = options.get('--format')
+
+    # Pre-flight checks
+    if options.get('save'):
+        directory = options.get('--directory') or os.path.curdir
+        filepath = get_document_path(directory, document_number, document_format, source=client.FILENAME_SOURCE)
+        if os.path.exists(filepath):
+            if not options.get('--overwrite'):
+                raise KeyError('File "{}" already exists. Use --overwrite.'.format(filepath))
+
+        options['file'] = filepath
+
+    # A. Run document acquisition
+    result = acquire_single_document(client, options)
+
+    # B. Process result
+    if result:
+        process_single_result(result, options)
+
+
+
+def acquire_single_document(client, options):
+
     document_type   = options.get('--type')
     document_number = options.get('<document-number>')
     document_format = options.get('--format')
@@ -48,56 +71,25 @@ def run_command(client, downloader, options):
     # Build query
     query = {document_type: document_number, 'format': document_format}
 
-
-
-    # Run document acquisition
-
     # Operation mode
 
     # 1. Synchronous mode
     if not options.get('--background'):
-
-        # Pre-flight checks
-        if options.get('save'):
-            directory = options.get('--directory') or os.path.curdir
-            filepath = get_document_path(directory, document_number, document_format, source=client.FILENAME_SOURCE)
-            if os.path.exists(filepath):
-                if not options.get('--overwrite'):
-                    raise KeyError('File "{}" already exists. Use --overwrite.'.format(filepath))
-
-            options['file'] = filepath
-
-        # Run download synchronously
         result = client.download(**query)
-
-        # Process result
-        process_single_result(result, options)
 
     # 2. Asynchronous mode
     else:
-
-        # Propagate "save" options to background task
-        task_options = {
-            'save': options.get('save'),
-            'directory': options.get('--directory'),
-            'overwrite': options.get('--overwrite'),
-        }
-
-        # Run background task asynchronously
-        task = downloader.run(query)
+        task = client.downloader.run(query)
         logger.info('Started background download task with id=%s', task.id)
 
         if options.get('--wait'):
-            result = downloader.poll()
+            result = client.downloader.poll()
         else:
             logger.info('Results will not be printed to STDOUT, '
                         'add option "--wait" to wait for the background download to finish.')
             return
 
-    if not result:
-        logger.warning('Empty result')
-        sys.exit(2)
-
+    return result
 
 def process_single_result(result, options):
 

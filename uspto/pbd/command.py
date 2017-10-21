@@ -52,11 +52,10 @@ def run():
     try:
         from uspto.util.tasks import AsynchronousDownloader
         from uspto.pbd.tasks import download_task
-        downloader = AsynchronousDownloader(download_task)
+        client.downloader = AsynchronousDownloader(download_task)
     except Exception as ex:
         logger.warning('Could not bootstrap Celery. Asynchronous downloading disabled. Exception:\n%s', ex)
-        downloader = None
 
     # Finally, run the command core implementation
-    run_command(client, downloader, options)
+    run_command(client, options)
 
