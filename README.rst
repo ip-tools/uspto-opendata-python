@@ -12,7 +12,7 @@ About
 =====
 ``uspto-opendata-python`` is a client library for accessing the USPTO Open Data APIs. It is written in Python.
 
-Currently, it is implementing API wrappers for the
+Currently, it implements API wrappers for the
 
 - `PAIR Bulk Data (PBD)`_ system
 - `Patent Examination Data System (PEDS)`_

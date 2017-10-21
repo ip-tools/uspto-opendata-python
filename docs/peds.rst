@@ -1,6 +1,6 @@
-########################################
-USPTO Patent Examination Data System API
-########################################
+###############################################
+USPTO Patent Examination Data System API client
+###############################################
 
 The USPTO Patent Examination Data System (PEDS) contains bibliographic, published document and patent term extension data
 in Public PAIR from 1981 to present. There is also some data dating back to 1935.

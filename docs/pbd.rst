@@ -1,6 +1,6 @@
-########################
-USPTO PAIR Bulk Data API
-########################
+###############################
+USPTO PAIR Bulk Data API client
+###############################
 
 The USPTO PAIR Bulk Data (PBD) system contains bibliographic, published document and patent term extension data
 in Public PAIR from 1981 to present. There is also some data dating back to 1935.
