@@ -6,21 +6,21 @@ import json
 import logging
 import pathvalidate
 from docopt import docopt, DocoptExit
-from uspto.pair.api import UsptoPairClient
-from uspto.pair.version import __VERSION__
+from uspto.pbd.api import UsptoPairBulkDataClient
+from uspto.version import __VERSION__
 
-APP_NAME = 'pairclient ' + __VERSION__
+APP_NAME = 'uspto-pbd ' + __VERSION__
 
 logger = logging.getLogger(__name__)
 
 def run():
     """
     Usage:
-      pairclient get <document-number> --type=publication --format=xml [--pretty] [--debug]
-      pairclient save <document-number> --type=publication --format=xml [--pretty] [--directory=/var/spool/uspto-pair] [--overwrite] [--debug]
-      pairclient info
-      pairclient --version
-      pairclient (-h | --help)
+      uspto-pbd get  <document-number> --type=publication --format=xml [--pretty] [--debug]
+      uspto-pbd save <document-number> --type=publication --format=xml [--pretty] [--directory=/var/spool/uspto-pair] [--overwrite] [--debug]
+      uspto-pbd info
+      uspto-pbd --version
+      uspto-pbd (-h | --help)
 
     Options:
       --type=<type>             Document type, one of publication, application, patent
@@ -34,25 +34,25 @@ def run():
 
     Operation modes:
 
-        "pairclient get ..." will download the document and print the result to STDOUT.
-        "pairclient save ..." will save the document to the designated target directory, defaulting to the current path.
+        "uspto-pbd get ..." will download the document and print the result to STDOUT.
+        "uspto-pbd save ..." will save the document to the designated target directory, defaulting to the current path.
 
     Examples:
 
         # Download published application by publication number in XML format
-        pairclient get "2017/0293197" --type=publication --format=xml
+        uspto-pbd get "2017/0293197" --type=publication --format=xml
 
         # ... same in JSON format, with pretty-printing
-        pairclient get "2017/0293197" --type=publication --format=json --pretty
+        uspto-pbd get "2017/0293197" --type=publication --format=json --pretty
 
         # Download published application by application number
-        pairclient get "15431686" --type=application --format=xml
+        uspto-pbd get "15431686" --type=application --format=xml
 
         # Download granted patent by patent number
-        pairclient get "PP28532" --type=patent --format=xml
+        uspto-pbd get "PP28532" --type=patent --format=xml
 
         # Download granted patent by patent number and save to /var/spool/uspto-pair/PP28532.xml
-        pairclient save "PP28532" --type=patent --format=xml --directory=/var/spool/uspto-pair
+        uspto-pbd save "PP28532" --type=patent --format=xml --directory=/var/spool/uspto-pair
 
     """
     options = docopt(run.__doc__, version=APP_NAME)
@@ -77,7 +77,7 @@ def run():
                 raise KeyError('File "{}" already exists. Use --overwrite.'.format(filepath))
 
     # Run document acquisition
-    client = UsptoPairClient()
+    client = UsptoPairBulkDataClient()
     result = client.download(**query)
     payload = result[document_format]
 

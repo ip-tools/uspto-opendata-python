@@ -17,9 +17,9 @@ requires = [
 test_requires = [
 ]
 
-setup(name='uspto-opendata-pair',
+setup(name='uspto-opendata-python',
       version='0.2.1',
-      description='uspto-opendata-pair is a client for accessing the USPTO PAIR Bulk Data API (PBD)',
+      description='uspto-opendata-python is a client library for accessing the USPTO Open Data APIs',
       long_description=README,
       license="MIT",
       classifiers=[
@@ -47,8 +47,8 @@ setup(name='uspto-opendata-pair',
       ],
       author='Andreas Motl',
       author_email='andreas@ip-tools.org',
-      url='https://github.com/ip-tools/uspto-opendata-pair',
-      keywords='uspto pair opendata bulk data download patent information research search',
+      url='https://github.com/ip-tools/uspto-opendata-python',
+      keywords='uspto pair pbd peds opendata bulk data download patent information research search',
       packages=find_packages(),
       include_package_data=True,
       package_data={
@@ -69,7 +69,7 @@ setup(name='uspto-opendata-pair',
 
       entry_points={
         'console_scripts': [
-            'pairclient = uspto.pair.commands:run',
+            'uspto-pbd = uspto.pbd.commands:run',
         ],
       },
 

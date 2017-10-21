@@ -3,9 +3,9 @@
 import logging
 from celery import Celery, Task
 from celery.decorators import task
-from uspto.pair.api import UsptoPairClient
+from uspto.pbd.api import UsptoPairBulkDataClient
 
-celery_app = Celery('uspto.pair.tasks', backend='redis://localhost', broker='redis://localhost')
+celery_app = Celery('uspto.pbd.tasks', backend='redis://localhost', broker='redis://localhost')
 
 celery_app.conf.update(
     task_serializer = 'pickle',
@@ -25,10 +25,10 @@ def download(query):
 # http://shulhi.com/class-based-celery-task/
 class DownloadTask(Task):
 
-    name = 'uspto.pair.tasks.DownloadTask'
+    name = 'uspto.pbd.tasks.DownloadTask'
 
     def __init__(self, *args, **kwargs):
-        self.client = UsptoPairClient()
+        self.client = UsptoPairBulkDataClient()
         self.database = kwargs.get('database', None)
         self.host = kwargs.get('host', None)
         self.result = None

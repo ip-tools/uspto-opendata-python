@@ -5,8 +5,8 @@ Taskqueue-based downloading
 
 About
 =====
-uspto-opendata-pair is prepared to use a task queue for scheduling downloads
-in parallel. This documentation gives a rough overview about how things work.
+It is possible to use a task queue for scheduling downloads in the background.
+This documentation gives a rough overview about how things work.
 
 
 Introduction
@@ -37,7 +37,7 @@ Run examples::
     source .venv27/bin/activate
 
     # Run download jobs over the Celery task queue
-    python uspto/pair/download.py
+    python uspto/pbd/download.py
 
 
 .. _Celery: https://celery.readthedocs.io/

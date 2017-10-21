@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 
 logger = logging.getLogger(__name__)
 
-class UsptoPairClient:
+class UsptoPairBulkDataClient:
     """
     Python client for accessing the USPTO PAIR Bulk Data API (https://pairbulkdata.uspto.gov/).
     See also: https://pairbulkdata.uspto.gov/#/api-documentation
@@ -171,7 +171,7 @@ class UsptoPairClient:
 
 def download_and_print(**query):
 
-    client = UsptoPairClient()
+    client = UsptoPairBulkDataClient()
 
     result = client.download(**query)
 
