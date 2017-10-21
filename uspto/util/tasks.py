@@ -71,10 +71,10 @@ class AsynchronousDownloader:
 
         # http://docs.celeryproject.org/en/latest/userguide/calling.html
 
-        if type(query) is types.DictionaryType:
+        if isinstance(query, dict):
             self.task = self.task_function.delay(query)
 
-        elif type(query) is types.ListType:
+        elif isinstance(query, list):
             tasks = map(self.task_function.s, query)
             task_group = celery.group(tasks)
             self.task = task_group.delay()
