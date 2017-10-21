@@ -6,8 +6,7 @@ import json
 import logging
 import pathvalidate
 from docopt import docopt, DocoptExit
-from uspto.util.common import boot_logging
-from uspto.util.tasks import AsynchronousDownloader
+import uspto.celery                     # Must import here to enable communication with Celery
 
 logger = logging.getLogger(__name__)
 

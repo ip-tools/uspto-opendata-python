@@ -4,6 +4,7 @@ import logging
 from docopt import docopt, DocoptExit
 from uspto.peds.client import UsptoPatentExaminationDataSystemClient
 from uspto.util.command import run_command
+from uspto.util.common import boot_logging
 from uspto.version import __VERSION__
 """
 Python command line client for accessing the USPTO Patent Examination Data System API (https://ped.uspto.gov/).
@@ -41,6 +42,9 @@ def run():
     # Read commandline options
     options = docopt(commandline_schema, version=APP_NAME + ' ' + __VERSION__)
 
+    # Start logging subsystem
+    boot_logging(options)
+
     # An instance of the API client
     client = UsptoPatentExaminationDataSystemClient()
 
@@ -49,7 +53,8 @@ def run():
         from uspto.util.tasks import AsynchronousDownloader
         from uspto.peds.tasks import download_task
         downloader = AsynchronousDownloader(download_task)
-    except:
+    except Exception as ex:
+        logger.warning('Could not bootstrap Celery. Asynchronous downloading disabled. Exception:\n%s', ex)
         downloader = None
 
     # Finally, run the command core implementation

@@ -2,18 +2,8 @@
 # (c) 2017 Andreas Motl <andreas@ip-tools.org>
 import time
 import json
-import types
 import celery
 import logging
-
-celery_app = celery.Celery('uspto.util.tasks', backend='redis://localhost', broker='redis://localhost')
-
-celery_app.conf.update(
-    task_serializer = 'pickle',
-    result_serializer = 'pickle',
-    accept_content = ['pickle'],
-)
-
 
 logger = logging.getLogger(__name__)
 

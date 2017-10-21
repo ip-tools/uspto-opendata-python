@@ -4,6 +4,7 @@ USPTO Open Data API client CHANGES
 
 development
 ===========
+- Improve Celery bootstrapping
 
 2017-10-21 0.3.0
 ================
