@@ -78,10 +78,10 @@ class AsynchronousDownloader:
             return self.poll_task()
 
     def poll_task(self):
-        logger.info('Task id is "%s"', self.task.id)
+        logger.info('Polling task with id=%s', self.task.id)
         try:
             while not self.task.ready():
-                logger.info('Task %s in state %s', self.task.id, self.task.state)
+                logger.info('Task with id=%s in state %s', self.task.id, self.task.state)
                 time.sleep(1)
 
             result = self.task.get()
@@ -90,7 +90,7 @@ class AsynchronousDownloader:
             return result
 
         except Exception as ex:
-            logger.error('Download failed with exception: "%s"', ex)
+            logger.error('Download failed with exception: "%s: %s"', ex.__class__.__name__, ex)
 
     def poll_group(self):
         while self.task.results:
@@ -101,7 +101,7 @@ class AsynchronousDownloader:
                 #print 'self.task.dir:', dir(task)
 
                 if subtask.ready():
-                    logger.info('Task %s in state %s.', subtask.id, subtask.state)
+                    logger.info('Task with id=%s in state %s.', subtask.id, subtask.state)
 
                     try:
                         result = subtask.get()
@@ -109,7 +109,7 @@ class AsynchronousDownloader:
                         print(json.dumps(result, indent=4))
 
                     except Exception as ex:
-                        logger.error('Download failed with exception: "%s"', ex)
+                        logger.error('Download failed with exception: "%s: %s"', ex.__class__.__name__, ex)
 
                     self.task.results.remove(subtask)
 

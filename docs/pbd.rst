@@ -12,7 +12,9 @@ Synopsis
 
 API
 ===
-::
+The API has two different modes, synchronous and asynchronous.
+
+Synchronous mode::
 
     from uspto.pbd.api import UsptoPairBulkDataClient
     client = UsptoPairBulkDataClient()
@@ -26,6 +28,21 @@ API
     # Download granted patent by patent number
     result = client.download(patent='PP28532')
 
+Asynchronous mode::
+
+    from uspto.util.tasks import AsynchronousDownloader
+    from uspto.peds.tasks import download_task
+    downloader = AsynchronousDownloader(download_task)
+
+    # Start downloading single document
+    downloader.run({'patent': 'PP28532'})
+
+    # Start downloading multiple documents
+    downloader.run([{'publication': '2017/0293197'}, {'patent': 'PP28532'}])
+
+    # Wait until results arrived
+    result = downloader.poll()
+
 
 Command line
 ============
@@ -34,8 +51,8 @@ Command line
     $ uspto-pbd --help
 
     Usage:
-      uspto-pbd get  <document-number> --type=publication --format=xml [--pretty] [--debug]
-      uspto-pbd save <document-number> --type=publication --format=xml [--pretty] [--directory=/var/spool/uspto-pair] [--overwrite] [--debug]
+      uspto-pbd get  <document-number> --type=publication --format=xml [--pretty] [--background] [--poll] [--debug]
+      uspto-pbd save <document-number> --type=publication --format=xml [--pretty] [--directory=/var/spool/uspto-pair] [--overwrite] [--background] [--poll] [--debug]
       uspto-pbd info
       uspto-pbd --version
       uspto-pbd (-h | --help)
@@ -46,13 +63,14 @@ Command line
       --pretty                  Pretty-print output data
       --directory=<directory>   Save downloaded to documents to designated target directory
       --overwrite               When saving documents, overwrite already existing documents
+      --background              Run the download process in background
       --debug                   Enable debug messages
       --version                 Show version information
       -h --help                 Show this screen
 
-    Operation modes:
+    Output modes:
 
-        "uspto-pbd get ..." will download the document and print the result to STDOUT.
+        "uspto-pbd get ..."  will download the document and print the result to STDOUT.
         "uspto-pbd save ..." will save the document to the designated target directory, defaulting to the current path.
 
     Examples:

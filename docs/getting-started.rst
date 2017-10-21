@@ -27,11 +27,11 @@ Usage
 =====
 Please refer to the respective documentation about which API you want to access:
 
-- PAIR Bulk Data (PBD) system: pbd_
-- Patent Examination Data System (PEDS): peds_
+- PAIR Bulk Data (PBD) system: `PBD usage`_
+- Patent Examination Data System (PEDS): `PEDS usage`_
 
-.. _pbd: pbd.rst
-.. _peds: peds.rst
+.. _PBD usage: pbd.rst
+.. _PEDS usage: peds.rst
 
 
 Asynchronous operation
