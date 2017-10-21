@@ -6,21 +6,19 @@ import json
 import logging
 import pathvalidate
 from docopt import docopt, DocoptExit
-from uspto.pbd.api import UsptoPairBulkDataClient
-from uspto.version import __VERSION__
-
-APP_NAME = 'uspto-pbd ' + __VERSION__
+from uspto.util.common import boot_logging
+from uspto.util.tasks import AsynchronousDownloader
 
 logger = logging.getLogger(__name__)
 
-def run():
+def run_command(client, downloader, options):
     """
     Usage:
-      uspto-pbd get  <document-number> --type=publication --format=xml [--pretty] [--debug]
-      uspto-pbd save <document-number> --type=publication --format=xml [--pretty] [--directory=/var/spool/uspto-pair] [--overwrite] [--debug]
-      uspto-pbd info
-      uspto-pbd --version
-      uspto-pbd (-h | --help)
+      {program} get  <document-number> --type=publication --format=xml [--pretty] [--background] [--debug]
+      {program} save <document-number> --type=publication --format=xml [--pretty] [--directory=/var/spool/uspto-pair] [--overwrite] [--background] [--debug]
+      {program} info
+      {program} --version
+      {program} (-h | --help)
 
     Options:
       --type=<type>             Document type, one of publication, application, patent
@@ -28,34 +26,19 @@ def run():
       --pretty                  Pretty-print output data
       --directory=<directory>   Save downloaded to documents to designated target directory
       --overwrite               When saving documents, overwrite already existing documents
+      --background              Run the download in background
       --debug                   Enable debug messages
       --version                 Show version information
       -h --help                 Show this screen
 
     Operation modes:
 
-        "uspto-pbd get ..." will download the document and print the result to STDOUT.
-        "uspto-pbd save ..." will save the document to the designated target directory, defaulting to the current path.
-
-    Examples:
-
-        # Download published application by publication number in XML format
-        uspto-pbd get "2017/0293197" --type=publication --format=xml
-
-        # ... same in JSON format, with pretty-printing
-        uspto-pbd get "2017/0293197" --type=publication --format=json --pretty
-
-        # Download published application by application number
-        uspto-pbd get "15431686" --type=application --format=xml
-
-        # Download granted patent by patent number
-        uspto-pbd get "PP28532" --type=patent --format=xml
-
-        # Download granted patent by patent number and save to /var/spool/uspto-pair/PP28532.xml
-        uspto-pbd save "PP28532" --type=patent --format=xml --directory=/var/spool/uspto-pair
+        "{program} get ..." will download the document and print the result to STDOUT.
+        "{program} save ..." will save the document to the designated target directory, defaulting to the current path.
 
     """
-    options = docopt(run.__doc__, version=APP_NAME)
+
+    # Debugging
     #print('options: {}'.format(options))
 
     boot_logging(options)
@@ -76,9 +59,21 @@ def run():
             if not options.get('--overwrite'):
                 raise KeyError('File "{}" already exists. Use --overwrite.'.format(filepath))
 
+
     # Run document acquisition
-    client = UsptoPairBulkDataClient()
-    result = client.download(**query)
+
+    if not options.get('--background'):
+        result = client.download(**query)
+
+    else:
+        downloader.run(query)
+        if options.get('get'):
+            result = downloader.poll()
+
+    if not result:
+        logger.warning('Empty result')
+        sys.exit(2)
+
     payload = result[document_format]
 
     # Prettify result payload
@@ -86,25 +81,14 @@ def run():
         if document_format == 'json':
             payload = json.dumps(json.loads(payload), indent=4)
 
-    # Operation mode: Print to STDOUT or save to filesystem
+    # Operation modes
+
+    # 1. Print to STDOUT
     if options.get('get'):
         print(payload)
 
+    # 2. Save to filesystem
     elif options.get('save'):
         open(filepath, 'w').write(payload)
         logger.info('Saved document to {}'.format(filepath))
-
-
-def boot_logging(options=None):
-    log_level = logging.INFO
-    if options and options.get('--debug'):
-        log_level = logging.DEBUG
-    setup_logging(level=log_level)
-
-def setup_logging(level=logging.INFO):
-    log_format = '%(asctime)-15s [%(name)-20s] %(levelname)-7s: %(message)s'
-    logging.basicConfig(
-        format=log_format,
-        stream=sys.stderr,
-        level=level)
 

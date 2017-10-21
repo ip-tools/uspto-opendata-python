@@ -7,18 +7,11 @@ import zipfile
 import requests
 from io import BytesIO
 from bs4 import BeautifulSoup
+from uspto.util.common import to_list
 
 logger = logging.getLogger(__name__)
 
-class UsptoPairBulkDataClient:
-    """
-    Python client for accessing the USPTO PAIR Bulk Data API (https://pairbulkdata.uspto.gov/).
-    See also: https://pairbulkdata.uspto.gov/#/api-documentation
-    """
-    QUERY_URL            = 'https://pairbulkdata.uspto.gov/api/queries'
-    PACKAGE_REQUEST_URL  = 'https://pairbulkdata.uspto.gov/api/queries/{query_id}/package?format={format}'
-    PACKAGE_STATUS_URL   = 'https://pairbulkdata.uspto.gov/api/queries/{query_id}?format={format}'
-    PACKAGE_DOWNLOAD_URL = 'https://pairbulkdata.uspto.gov/api/queries/{query_id}/download?format={format}'
+class UsptoGenericBulkDataClient:
 
     def __init__(self):
         self.session = requests.Session()
@@ -39,14 +32,15 @@ class UsptoPairBulkDataClient:
             'sort': 'applId asc',
             'start': '0',
         })
+
         if response.status_code != 200:
-            logger.error(response.text)
-            if response.headers['Content-Type'] == 'text/html':
-                soup = BeautifulSoup(response.text)
+            logger.error('Error while querying for %s\n%s', searchText, response.text)
+            if response.headers['Content-Type'].startswith('text/html'):
+                soup = BeautifulSoup(response.text, 'html.parser')
                 title = soup.find('title')
                 message = title.string.strip()
                 hr = soup.body.find('hr')
-                reason =  hr.next_sibling.string.strip()
+                reason = hr.next_sibling.string.strip()
                 if reason:
                     message += '. ' + reason
                 message += ' (status={})'.format(response.status_code)
@@ -67,10 +61,31 @@ class UsptoPairBulkDataClient:
         return self.query(searchText)
 
     def request_package(self, query_id, format):
+
+        # The platform sometimes responds with "403 Forbidden" if requesting the package too fast after querying.
+        # Account for that.
+        time.sleep(1)
+
         logger.info('Requesting package for queryId=%s with format=%s', query_id, format)
         response = self.session.put(self.PACKAGE_REQUEST_URL.format(query_id=query_id, format=format))
-        assert response.status_code == 200
-        time.sleep(1)
+
+        if response.status_code != 200:
+            logger.error('Error while requesting package for queryId=%s\n%s', query_id, response.text)
+            if response.headers['Content-Type'].startswith('text/html'):
+                soup = BeautifulSoup(response.text, 'html.parser')
+                title = soup.find('title').string.strip()
+                reason = soup.body.find('h1').string.strip('- ')
+                reason_more = ', '.join(map(lambda item: ': '.join(item.stripped_strings), soup.body.find_all('p')))
+
+                message = title
+                if reason:
+                    message += '. ' + reason
+                if reason_more:
+                    message += '. ' + reason_more
+                message += ' (status={})'.format(response.status_code)
+
+                raise ValueError(message)
+
         return response.json()
 
     def package_status(self, query_id, format):
@@ -80,8 +95,13 @@ class UsptoPairBulkDataClient:
         return response.json()
 
     def wait_for_package(self, query_id, format):
-        # TODO: Break after x seconds or react on possible "FAIL" states
-        # TODO: Sometimes jobs get stuck in 'INITIATED' state
+
+        # The platform sometimes responds with "403 Forbidden" if checking the package status too fast after requesting it.
+        # Account for that.
+        time.sleep(1)
+
+        # TODO: Break loop after x seconds, sometimes jobs get stuck in the "INITIATED" state.
+        # TODO: Properly account for possible "FAIL" states.
         while True:
             response = self.package_status(query_id, format)
             status = response['jobStatus']
@@ -142,7 +162,7 @@ class UsptoPairBulkDataClient:
             do_xml = True
             do_json = True
         else:
-            formats = to_list(query['format'])
+            formats = to_list(query['format'].lower())
             do_xml = 'xml' in formats
             do_json = 'json' in formats
 
@@ -169,50 +189,18 @@ class UsptoPairBulkDataClient:
 
         return result
 
-def download_and_print(**query):
-
-    client = UsptoPairBulkDataClient()
+def download_and_print(client, **query):
 
     result = client.download(**query)
 
     print('-' * 42)
+    print('XML format')
+    print('-' * 42)
     print(result['xml'])
-    print()
+    print
 
     print('-' * 42)
-    print(json.dumps(result['json'], indent=4))
-    print()
-
-
-def to_list(obj):
-    """Convert an object to a list if it is not already one"""
-    # stolen from cornice.util
-    if not isinstance(obj, (list, tuple)):
-        obj = [obj, ]
-    return obj
-
-
-if __name__ == '__main__':
-
-    logging.basicConfig(level=logging.INFO)
-
-    # Published applications by publication number
-    # US2017293197A1: appEarlyPubNumber:(2017/0293197)
-    download_and_print(publication='2017/0293197')
-    #download_and_print(publication='2017-0293197')
-    #download_and_print(publication='20170293197')  # No results
-
-    # Published applications by application number
-    # US2017293197A1: applId:(15431686)
-    #download_and_print(application='15431686')
-
-    # Granted patents by patent number
-    #download_and_print(patent='PP28532')
-    #download_and_print(patent='9788906')
-    #download_and_print(patent='D799980')
-    #download_and_print(patent='RE46571')
-    #download_and_print(patent='3525666')           # No results
-
-    # Deleted: US11673P
-    #download_and_print(patent='PP11673')           # No results
-
+    print('JSON format')
+    print('-' * 42)
+    print(json.dumps(json.loads(result['json']), indent=4))
+    print

@@ -69,7 +69,8 @@ setup(name='uspto-opendata-python',
 
       entry_points={
         'console_scripts': [
-            'uspto-pbd = uspto.pbd.commands:run',
+            'uspto-pbd  = uspto.pbd.command:run',
+            'uspto-peds = uspto.peds.command:run',
         ],
       },
 

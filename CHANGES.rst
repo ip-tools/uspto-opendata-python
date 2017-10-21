@@ -4,6 +4,7 @@ USPTO PAIR Bulk Data API Client CHANGES
 
 development
 ===========
+- Implement access to the USPTO Patent Examination Data System (PEDS), including command line program ``uspto-peds``
 
 2017-10-20 0.2.1
 ================
@@ -12,7 +13,7 @@ development
 2017-10-20 0.2.0
 ================
 - Python3 compatibility
-- Add commandline program "uspto-pbd" for printing and saving documents from the USPTO PAIR Bulk Data API
+- Add command line program ``uspto-pbd`` for printing and saving documents from the USPTO PAIR Bulk Data API
 
 2017-10-20 0.1.0
 ================
