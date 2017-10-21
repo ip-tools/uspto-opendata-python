@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 def run_command(client, downloader, options):
     """
     Usage:
-      {program} get  <document-number> --type=publication --format=xml [--pretty] [--background] [--debug]
-      {program} save <document-number> --type=publication --format=xml [--pretty] [--directory=/var/spool/uspto-pair] [--overwrite] [--background] [--debug]
+      {program} get  <document-number> --type=publication --format=xml [--pretty] [--background] [--poll] [--debug]
+      {program} save <document-number> --type=publication --format=xml [--pretty] [--directory=/var/spool/uspto-pair] [--overwrite] [--background] [--poll] [--debug]
       {program} info
       {program} --version
       {program} (-h | --help)
@@ -25,22 +25,21 @@ def run_command(client, downloader, options):
       --pretty                  Pretty-print output data
       --directory=<directory>   Save downloaded to documents to designated target directory
       --overwrite               When saving documents, overwrite already existing documents
-      --background              Run the download in background
+      --background              Run the download process in background
+      --poll                    Wait for the background download to finish
       --debug                   Enable debug messages
       --version                 Show version information
       -h --help                 Show this screen
 
-    Operation modes:
+    Output modes:
 
-        "{program} get ..." will download the document and print the result to STDOUT.
+        "{program} get ..."  will download the document and print the result to STDOUT.
         "{program} save ..." will save the document to the designated target directory, defaulting to the current path.
 
     """
 
     # Debugging
     #print('options: {}'.format(options))
-
-    boot_logging(options)
 
     document_type   = options.get('--type')
     document_number = options.get('<document-number>')
@@ -61,18 +60,30 @@ def run_command(client, downloader, options):
 
     # Run document acquisition
 
+    # Operation mode
+
+    # 1. Synchronous mode
     if not options.get('--background'):
         result = client.download(**query)
 
+    # 2. Asynchronous mode
     else:
-        downloader.run(query)
+        task = downloader.run(query)
+        logger.info('Started download task with id=%s', task.id)
+
         if options.get('get'):
-            result = downloader.poll()
+            if options.get('--poll'):
+                result = downloader.poll()
+            else:
+                logger.info('Results will not be printed to STDOUT, '
+                            'add option "--poll" to wait for the background download to finish.')
+                return
 
     if not result:
         logger.warning('Empty result')
         sys.exit(2)
 
+    # Choose output format from user selection
     payload = result[document_format]
 
     # Prettify result payload
@@ -80,7 +91,7 @@ def run_command(client, downloader, options):
         if document_format == 'json':
             payload = json.dumps(json.loads(payload), indent=4)
 
-    # Operation modes
+    # Output mode
 
     # 1. Print to STDOUT
     if options.get('get'):

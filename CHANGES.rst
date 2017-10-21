@@ -5,6 +5,7 @@ USPTO Open Data API client CHANGES
 development
 ===========
 - Improve Celery bootstrapping
+- Add “--poll” option to wait for results when running in “--background” mode
 
 2017-10-21 0.3.0
 ================
