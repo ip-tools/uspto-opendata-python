@@ -1,10 +1,14 @@
-#######################################
-USPTO PAIR Bulk Data API Client CHANGES
-#######################################
+##################################
+USPTO Open Data API client CHANGES
+##################################
 
 development
 ===========
+
+2017-10-21 0.3.0
+================
 - Implement access to the USPTO Patent Examination Data System (PEDS), including command line program ``uspto-peds``
+- Generalize Celery-based background downloads between PBD and PEDS
 
 2017-10-20 0.2.1
 ================
