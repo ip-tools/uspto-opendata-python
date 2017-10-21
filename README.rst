@@ -1,18 +1,18 @@
+.. image:: https://img.shields.io/github/tag/ip-tools/uspto-opendata-python.svg
+    :target: https://github.com/ip-tools/uspto-opendata-python
+
+.. image:: https://img.shields.io/badge/Python-2.7,%203.6-green.svg
+    :target: https://github.com/ip-tools/uspto-opendata-python
+
 ##########################
 USPTO Open Data API client
 ##########################
 
-.. image:: https://img.shields.io/github/tag/ip-tools/uspto-opendata-python.svg
-
-.. image:: https://img.shields.io/badge/Python-2.7,%203.6-green.svg
-
-|
-
 About
 =====
-uspto-opendata-python is a client library for accessing the USPTO Open Data APIs written in Python.
+``uspto-opendata-python`` is a client library for accessing the USPTO Open Data APIs. It is written in Python.
 
-It is currently implementing API wrappers for the
+Currently, it is implementing API wrappers for the
 
 - `PAIR Bulk Data (PBD)`_ system
 - `Patent Examination Data System (PEDS)`_
@@ -25,8 +25,6 @@ The transaction history includes the transaction date, transaction code and tran
 
 .. _PAIR Bulk Data (PBD): https://pairbulkdata.uspto.gov/
 .. _Patent Examination Data System (PEDS): https://ped.uspto.gov/
-
-.. todo:: Implement API wrappers for IBD, BDSS, PTAB, Assignment and PatentsView.
 
 
 Background
@@ -71,4 +69,9 @@ Spend some time taking a look around, locate a bug, design issue or
 spelling mistake and then send us a pull request or create an issue.
 
 Thanks in advance for your efforts, we really appreciate any help or feedback.
+
+
+Todo
+====
+Implement API wrappers for IBD, BDSS, PTAB, Assignment and PatentsView.
 
