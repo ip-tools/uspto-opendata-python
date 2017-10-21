@@ -54,8 +54,8 @@ Command line
     $ uspto-peds --help
 
     Usage:
-      uspto-peds get  <document-number> --type=publication --format=xml [--pretty] [--background] [--poll] [--debug]
-      uspto-peds save <document-number> --type=publication --format=xml [--pretty] [--directory=/var/spool/uspto-pair] [--overwrite] [--background] [--poll] [--debug]
+      uspto-peds get  <document-number> --type=publication --format=xml [--pretty] [--background] [--wait] [--debug]
+      uspto-peds save <document-number> --type=publication --format=xml [--pretty] [--directory=/var/spool/uspto-pair] [--overwrite] [--background] [--wait] [--debug]
       uspto-peds info
       uspto-peds --version
       uspto-peds (-h | --help)

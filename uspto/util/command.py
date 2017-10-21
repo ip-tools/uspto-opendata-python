@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 def run_command(client, downloader, options):
     """
     Usage:
-      {program} get  <document-number> --type=publication --format=xml [--pretty] [--background] [--poll] [--debug]
-      {program} save <document-number> --type=publication --format=xml [--pretty] [--directory=/var/spool/uspto-pair] [--overwrite] [--background] [--poll] [--debug]
+      {program} get  <document-number> --type=publication --format=xml [--pretty] [--background] [--wait] [--debug]
+      {program} save <document-number> --type=publication --format=xml [--pretty] [--directory=/var/spool/uspto-pair] [--overwrite] [--background] [--wait] [--debug]
       {program} info
       {program} --version
       {program} (-h | --help)
@@ -26,7 +26,7 @@ def run_command(client, downloader, options):
       --directory=<directory>   Save downloaded to documents to designated target directory
       --overwrite               When saving documents, overwrite already existing documents
       --background              Run the download process in background
-      --poll                    Wait for the background download to finish
+      --wait                    Wait for the background download to finish
       --debug                   Enable debug messages
       --version                 Show version information
       -h --help                 Show this screen
@@ -87,11 +87,11 @@ def run_command(client, downloader, options):
         task = downloader.run(query)
         logger.info('Started background download task with id=%s', task.id)
 
-        if options.get('--poll'):
+        if options.get('--wait'):
             result = downloader.poll()
         else:
             logger.info('Results will not be printed to STDOUT, '
-                        'add option "--poll" to wait for the background download to finish.')
+                        'add option "--wait" to wait for the background download to finish.')
             return
 
     if not result:

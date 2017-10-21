@@ -51,8 +51,8 @@ Command line
     $ uspto-pbd --help
 
     Usage:
-      uspto-pbd get  <document-number> --type=publication --format=xml [--pretty] [--background] [--poll] [--debug]
-      uspto-pbd save <document-number> --type=publication --format=xml [--pretty] [--directory=/var/spool/uspto-pair] [--overwrite] [--background] [--poll] [--debug]
+      uspto-pbd get  <document-number> --type=publication --format=xml [--pretty] [--background] [--wait] [--debug]
+      uspto-pbd save <document-number> --type=publication --format=xml [--pretty] [--directory=/var/spool/uspto-pair] [--overwrite] [--background] [--wait] [--debug]
       uspto-pbd info
       uspto-pbd --version
       uspto-pbd (-h | --help)
