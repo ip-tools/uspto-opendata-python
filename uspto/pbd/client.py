@@ -15,6 +15,7 @@ class UsptoPairBulkDataClient(UsptoGenericBulkDataClient):
     PACKAGE_STATUS_URL   = 'https://pairbulkdata.uspto.gov/api/queries/{query_id}?format={format}'
     PACKAGE_DOWNLOAD_URL = 'https://pairbulkdata.uspto.gov/api/queries/{query_id}/download?format={format}'
 
+    FILENAME_SOURCE      = 'pbd'
 
 if __name__ == '__main__':
 

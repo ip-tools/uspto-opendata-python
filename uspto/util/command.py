@@ -4,8 +4,8 @@ import os
 import sys
 import json
 import logging
-import pathvalidate
 from docopt import docopt, DocoptExit
+from uspto.util.common import get_document_path
 import uspto.celery                     # Must import here to enable communication with Celery
 
 logger = logging.getLogger(__name__)
@@ -48,14 +48,6 @@ def run_command(client, downloader, options):
     # Build query
     query = {document_type: document_number, 'format': document_format}
 
-    # Pre-flight checks
-    if options.get('save'):
-        directory = options.get('--directory') or os.path.curdir
-        filename = pathvalidate.sanitize_filename('{name}.{suffix}'.format(name=document_number.upper(), suffix=document_format.lower()))
-        filepath = os.path.join(directory, filename)
-        if os.path.exists(filepath):
-            if not options.get('--overwrite'):
-                raise KeyError('File "{}" already exists. Use --overwrite.'.format(filepath))
 
 
     # Run document acquisition
@@ -64,24 +56,52 @@ def run_command(client, downloader, options):
 
     # 1. Synchronous mode
     if not options.get('--background'):
+
+        # Pre-flight checks
+        if options.get('save'):
+            directory = options.get('--directory') or os.path.curdir
+            filepath = get_document_path(directory, document_number, document_format, source=client.FILENAME_SOURCE)
+            if os.path.exists(filepath):
+                if not options.get('--overwrite'):
+                    raise KeyError('File "{}" already exists. Use --overwrite.'.format(filepath))
+
+            options['file'] = filepath
+
+        # Run download synchronously
         result = client.download(**query)
+
+        # Process result
+        process_single_result(result, options)
 
     # 2. Asynchronous mode
     else:
-        task = downloader.run(query)
-        logger.info('Started download task with id=%s', task.id)
 
-        if options.get('get'):
-            if options.get('--poll'):
-                result = downloader.poll()
-            else:
-                logger.info('Results will not be printed to STDOUT, '
-                            'add option "--poll" to wait for the background download to finish.')
-                return
+        # Propagate "save" options to background task
+        task_options = {
+            'save': options.get('save'),
+            'directory': options.get('--directory'),
+            'overwrite': options.get('--overwrite'),
+        }
+
+        # Run background task asynchronously
+        task = downloader.run(query)
+        logger.info('Started background download task with id=%s', task.id)
+
+        if options.get('--poll'):
+            result = downloader.poll()
+        else:
+            logger.info('Results will not be printed to STDOUT, '
+                        'add option "--poll" to wait for the background download to finish.')
+            return
 
     if not result:
         logger.warning('Empty result')
         sys.exit(2)
+
+
+def process_single_result(result, options):
+
+    document_format = options.get('--format')
 
     # Choose output format from user selection
     payload = result[document_format]
@@ -99,6 +119,7 @@ def run_command(client, downloader, options):
 
     # 2. Save to filesystem
     elif options.get('save'):
+        filepath = options['file']
         open(filepath, 'w').write(payload)
         logger.info('Saved document to {}'.format(filepath))
 

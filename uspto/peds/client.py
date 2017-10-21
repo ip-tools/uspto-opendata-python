@@ -15,6 +15,8 @@ class UsptoPatentExaminationDataSystemClient(UsptoGenericBulkDataClient):
     PACKAGE_STATUS_URL   = 'https://ped.uspto.gov/api/queries/{query_id}?format={format}'
     PACKAGE_DOWNLOAD_URL = 'https://ped.uspto.gov/api/queries/{query_id}/download?format={format}'
 
+    FILENAME_SOURCE      = 'peds'
+
 
 if __name__ == '__main__':
 
