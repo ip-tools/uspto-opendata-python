@@ -5,6 +5,7 @@ USPTO Open Data API client CHANGES
 development
 ===========
 - When saving documents, optionally use the application identifier as filename
+- Make "--type" argument optional by guessing document type from number
 
 2017-10-22 0.4.0
 ================

@@ -54,8 +54,8 @@ Command line
     $ uspto-peds --help
 
     Usage:
-      uspto-peds get  <document-number> --type=publication --format=xml [--pretty] [--background] [--wait] [--debug]
-      uspto-peds save <document-number> --type=publication --format=xml [--pretty] [--directory=/var/spool/uspto] [--use-application-id] [--overwrite] [--background] [--wait] [--debug]
+      uspto-peds get  <document-number> --format=xml [--type=publication] [--pretty] [--background] [--wait] [--debug]
+      uspto-peds save <document-number> --format=xml [--type=publication] [--pretty] [--directory=/var/spool/uspto] [--use-application-id] [--overwrite] [--background] [--wait] [--debug]
       uspto-peds bulk get  --numberfile=numbers.txt --format=xml,json [--pretty] [--wait] [--debug]
       uspto-peds bulk save --numberfile=numbers.txt --format=xml,json [--pretty] --directory=/var/spool/uspto [--use-application-id] [--overwrite] [--wait] [--debug]
       uspto-peds info
@@ -63,16 +63,22 @@ Command line
       uspto-peds (-h | --help)
 
     General options:
-      --type=<type>             Document type, one of "publication", "application" or "patent".
+      <document-number>         Document number, e.g. 2017/0293197, US20170293197A1, PP28532, 15431686.
+                                Format depends on data source.
+      --type=<type>             Document type, one of "publication", "application", "patent" or "auto".
+
+    Output options:
       --format=<target>         Data format, one of "xml" or "json".
       --pretty                  Pretty-print output data. Currently applies to "--format=json" only.
-      --background              Run the download process in the background.
-      --wait                    Wait for the background download to finish.
 
     Save options:
       --directory=<directory>   Save downloaded to documents to designated target directory.
       --use-application-id      When saving documents, use the application identifier as filename.
       --overwrite               When saving documents, overwrite already existing documents.
+
+    Operation mode:
+      --background              Run the download process in the background.
+      --wait                    Wait for the background download to finish.
 
     Bulk options:
       --numberfile=<numberfile> Read document numbers from file.
@@ -113,7 +119,7 @@ Command line
 
     Bulk examples:
 
-        # Download all documents from numbers.txt and save them /var/spool/uspto/$number.peds.(xml|json)
+        # Download all documents from numbers.txt and save them to /var/spool/uspto/$number.peds.(xml|json)
         uspto-peds bulk save --numberfile=numbers.txt --format=xml,json --pretty --directory=/var/spool/uspto --wait
 
 

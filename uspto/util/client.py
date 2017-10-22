@@ -8,6 +8,7 @@ import requests
 from io import BytesIO
 from bs4 import BeautifulSoup
 from uspto.util.common import to_list
+from uspto.util.numbers import guess_type_from_number
 
 logger = logging.getLogger(__name__)
 
@@ -144,6 +145,11 @@ class UsptoGenericBulkDataClient:
 
     def download(self, **query):
 
+        query['type'] = query['type'] or 'auto'
+
+        if query['type'] == 'auto':
+            query['type'] = guess_type_from_number(query['number'])
+
         if query['type'] == 'application':
             response = self.query_application(query['number'])
         elif query['type'] == 'publication':
@@ -151,7 +157,7 @@ class UsptoGenericBulkDataClient:
         elif query['type'] == 'patent':
             response = self.query_patent(query['number'])
         else:
-            raise KeyError('Unknown document type for "{}"'.format(query))
+            raise KeyError('Unknown document type for {}'.format(query))
 
         if not response['queryResults']['searchResponse']['response']['numFound'] >= 1:
             raise KeyError('No results when searching for {}.'.format(query))
