@@ -10,12 +10,12 @@ class UsptoPatentExaminationDataSystemClient(UsptoGenericBulkDataClient):
     Python client for accessing the USPTO Patent Examination Data System API (https://ped.uspto.gov/).
     See also: https://ped.uspto.gov/peds/#/apiDocumentation
     """
+    DATASOURCE_NAME      = 'peds'
+
     QUERY_URL            = 'https://ped.uspto.gov/api/queries'
     PACKAGE_REQUEST_URL  = 'https://ped.uspto.gov/api/queries/{query_id}/package?format={format}'
     PACKAGE_STATUS_URL   = 'https://ped.uspto.gov/api/queries/{query_id}?format={format}'
     PACKAGE_DOWNLOAD_URL = 'https://ped.uspto.gov/api/queries/{query_id}/download?format={format}'
-
-    FILENAME_SOURCE      = 'peds'
 
 
 if __name__ == '__main__':

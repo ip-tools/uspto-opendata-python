@@ -7,12 +7,11 @@ from uspto.util.tasks import GenericDownloadTask
 class UsptoPatentExaminationDataSystemDownloadTask(GenericDownloadTask):
     name = 'uspto.peds.tasks.UsptoPatentExaminationDataSystemDownloadTask'
     client_factory = UsptoPatentExaminationDataSystemClient
-    pass
 
 @celery.shared_task(bind=True, base=UsptoPatentExaminationDataSystemDownloadTask)
-def download_task(self, query):
+def download_task(self, query, options=None):
     """
     https://celery.readthedocs.io/en/latest/userguide/tasks.html#basics
     http://docs.celeryproject.org/en/latest/whatsnew-4.0.html#the-task-base-class-no-longer-automatically-register-tasks
     """
-    return self.process(query)
+    return self.process(query, options)

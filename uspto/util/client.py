@@ -144,12 +144,12 @@ class UsptoGenericBulkDataClient:
 
     def download(self, **query):
 
-        if 'application' in query:
-            response = self.query_application(query['application'])
-        elif 'publication' in query:
-            response = self.query_publication(query['publication'])
-        elif 'patent' in query:
-            response = self.query_patent(query['patent'])
+        if query['type'] == 'application':
+            response = self.query_application(query['number'])
+        elif query['type'] == 'publication':
+            response = self.query_publication(query['number'])
+        elif query['type'] == 'patent':
+            response = self.query_patent(query['number'])
         else:
             raise KeyError('Unknown document type for "{}"'.format(query))
 
@@ -163,7 +163,7 @@ class UsptoGenericBulkDataClient:
             do_xml = True
             do_json = True
         else:
-            formats = to_list(query['format'].lower())
+            formats = to_list(query['format'])
             do_xml = 'xml' in formats
             do_json = 'json' in formats
 

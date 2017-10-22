@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 # (c) 2017 Andreas Motl <andreas@ip-tools.org>
+import os
 import time
 import json
 import celery
 import logging
+from collections import OrderedDict
+from uspto.util.common import get_document_path, to_list
 
 logger = logging.getLogger(__name__)
 
@@ -15,12 +18,17 @@ class GenericDownloadTask(celery.Task):
         self.client = self.client_factory()
         self.database = kwargs.get('database', None)
         self.host = kwargs.get('host', None)
+        self.options = None
         self.result = None
 
     # Main entry
-    def process(self, query):
-        logger.info('Starting download process for %s', query)
-        self.download(query)
+    def process(self, query, options=None):
+        self.query = query
+        self.options = options or {}
+
+        logger.info('Starting download process for query=%s, options=%s', query, options)
+        self.result = {'metadata': {'query': self.query, 'options': self.options, 'files': []}}
+        self.download()
         self.finish()
         return self.result
 
@@ -35,15 +43,31 @@ class GenericDownloadTask(celery.Task):
         logger.error('DownloadTask failed')
         logger.error(exc)
 
-    def download(self, query):
-        logger.info('Starting download job with %s', query)
-        self.update_state(state='PROGRESS', meta={'stage': 'downloading', 'query': query})
-        self.result = self.client.download(**query)
+    def download(self):
+        logger.info('Starting download job with query=%s', self.query)
+        self.update_state(state='PROGRESS', meta={'stage': 'downloading', 'query': self.query})
+        self.result.update(self.client.download(**self.query))
 
     def finish(self):
-        self.update_state(state='PROGRESS', meta={'stage': 'finished', })
-        pass
+        self.update_state(state='PROGRESS', meta={'stage': 'finishing'})
+        logger.info('Finishing with options: %s', self.options)
+        if self.options.get('save'):
+            directory = self.options.get('directory')
+            for format in to_list(self.query.get('format')):
 
+                filepath = get_document_path(directory, self.query.get('number'), format, self.client.DATASOURCE_NAME)
+                if os.path.exists(filepath):
+                    if not self.options.get('overwrite'):
+                        logger.warning('File "%s" already exists. Use --overwrite.', filepath)
+
+                payload = self.result[format]
+                if format == 'json' and self.options.get('pretty'):
+                    payload = json.dumps(json.loads(payload), indent=4)
+
+                open(filepath, 'w').write(payload)
+                logger.info('Saved document to {}'.format(filepath))
+
+                self.result['metadata']['files'].append(filepath)
 
 
 class AsynchronousDownloader:
@@ -52,30 +76,32 @@ class AsynchronousDownloader:
         self.task_function = task_function
         self.task = None
 
-    def run(self, query):
+    def run(self, query, options=None):
         """
         https://celery.readthedocs.io/en/latest/userguide/canvas.html#groups
         """
 
-        logger.info('Starting download of "%s"', query)
+        logger.info('Starting download with query=%s, options=%s', query, options)
 
         # http://docs.celeryproject.org/en/latest/userguide/calling.html
 
         if isinstance(query, dict):
-            self.task = self.task_function.delay(query)
+            self.task = self.task_function.delay(query, options)
 
         elif isinstance(query, list):
-            tasks = map(self.task_function.s, query)
+            tasks = [self.task_function.s(query, options) for query in query]
             task_group = celery.group(tasks)
             self.task = task_group.delay()
 
         return self.task
 
     def poll(self):
-        if isinstance(self.task, celery.group):
+        if isinstance(self.task, celery.result.AsyncResult):
+            return self.poll_task()
+        elif isinstance(self.task, celery.result.GroupResult):
             return self.poll_group()
         else:
-            return self.poll_task()
+            raise ValueError('Unknown result type from Celery task scheduler. type=%s, value=%s', type(self.task), self.task)
 
     def poll_task(self):
         logger.info('Polling task with id=%s', self.task.id)
@@ -85,20 +111,17 @@ class AsynchronousDownloader:
                 time.sleep(1)
 
             result = self.task.get()
-            logger.info('Download succeeded')
-            #print(json.dumps(result, indent=4))
+            logger.info('Download ready')
             return result
 
         except Exception as ex:
             logger.error('Download failed with exception: "%s: %s"', ex.__class__.__name__, ex)
 
     def poll_group(self):
+        results = OrderedDict()
         while self.task.results:
 
             for subtask in self.task.results:
-
-                #print 'task:', task
-                #print 'self.task.dir:', dir(task)
 
                 if subtask.ready():
                     logger.info('Task with id=%s in state %s.', subtask.id, subtask.state)
@@ -106,7 +129,9 @@ class AsynchronousDownloader:
                     try:
                         result = subtask.get()
                         logger.info('Download succeeded')
-                        print(json.dumps(result, indent=4))
+
+                        key = result['metadata']['query']['number']
+                        results[key] = result
 
                     except Exception as ex:
                         logger.error('Download failed with exception: "%s: %s"', ex.__class__.__name__, ex)
@@ -114,8 +139,8 @@ class AsynchronousDownloader:
                     self.task.results.remove(subtask)
 
                 else:
-                    #print dir(result)
                     logger.info('Task %s in state %s. Metadata: %s', subtask.id, subtask.state, subtask.info)
 
             time.sleep(1)
 
+        return results

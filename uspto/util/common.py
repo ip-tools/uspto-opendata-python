@@ -12,6 +12,12 @@ def to_list(obj):
         obj = [obj, ]
     return obj
 
+def read_list(string, separator=u','):
+    result = map(unicode.strip, string.split(separator))
+    if len(result) == 1 and not result[0]:
+        result = []
+    return result
+
 def boot_logging(options=None):
     log_level = logging.INFO
     if options and options.get('--debug'):

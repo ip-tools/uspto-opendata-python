@@ -4,10 +4,14 @@ USPTO Open Data API client CHANGES
 
 development
 ===========
+
+2017-10-22 0.4.0
+================
 - Improve Celery bootstrapping
 - Add “--poll” option to wait for results when running in “--background” mode
 - Improve command line argument handling
 - Rename command line option "--poll" to "--wait"
+- Introduce bulk mode based on task queue: ``uspto-{pbd,peds} bulk {get,save} ...``
 
 2017-10-21 0.3.0
 ================

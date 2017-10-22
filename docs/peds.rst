@@ -23,13 +23,13 @@ Synchronous mode::
     client = UsptoPatentExaminationDataSystemClient()
 
     # Download application by application number
-    result = client.download(application='15431686')
+    result = client.download(type='application', number='15431686')
 
     # Download published application by early publication number
-    result = client.download(publication='US20170293197A1')
+    result = client.download(type='publication', number='US20170293197A1')
 
     # Download granted patent by patent number
-    result = client.download(patent='PP28532')
+    result = client.download(type='patent', number='PP28532')
 
 Asynchronous mode::
 
@@ -38,10 +38,10 @@ Asynchronous mode::
     downloader = AsynchronousDownloader(download_task)
 
     # Start downloading single document
-    downloader.run({'patent': 'PP28532'})
+    downloader.run({'type': 'patent', 'number': 'PP28532'})
 
     # Start downloading multiple documents
-    downloader.run([{'publication': 'US20170293197A1'}, {'patent': 'PP28532'}])
+    downloader.run([{'type': 'publication', 'number': 'US20170293197A1'}, {'type': 'patent', 'number': 'PP28532'}])
 
     # Wait until results arrived
     result = downloader.poll()
@@ -55,26 +55,39 @@ Command line
 
     Usage:
       uspto-peds get  <document-number> --type=publication --format=xml [--pretty] [--background] [--wait] [--debug]
-      uspto-peds save <document-number> --type=publication --format=xml [--pretty] [--directory=/var/spool/uspto-pair] [--overwrite] [--background] [--wait] [--debug]
+      uspto-peds save <document-number> --type=publication --format=xml [--pretty] [--directory=/var/spool/uspto] [--overwrite] [--background] [--wait] [--debug]
+      uspto-peds bulk get  --numberfile=numbers.txt --format=xml,json [--pretty] [--wait] [--debug]
+      uspto-peds bulk save --numberfile=numbers.txt --format=xml,json [--pretty] --directory=/var/spool/uspto [--overwrite] [--wait] [--debug]
       uspto-peds info
       uspto-peds --version
       uspto-peds (-h | --help)
 
-    Options:
-      --type=<type>             Document type, one of publication, application, patent
-      --format=<target>         Data format, one of xml, json
-      --pretty                  Pretty-print output data
-      --directory=<directory>   Save downloaded to documents to designated target directory
-      --overwrite               When saving documents, overwrite already existing documents
-      --background              Run the download process in background
+    General options:
+      --type=<type>             Document type, one of "publication", "application" or "patent".
+      --format=<target>         Data format, one of "xml" or "json".
+      --pretty                  Pretty-print output data. Currently applies to "--format=json" only.
+      --directory=<directory>   Save downloaded to documents to designated target directory.
+      --overwrite               When saving documents, overwrite already existing documents.
+      --background              Run the download process in the background.
+      --wait                    Wait for the background download to finish.
+
+    Bulk options:
+      --numberfile=<numberfile> Read document numbers from file.
+                                Apply heuristics to determine document number type (application, publication, patent).
+                                Download multiple formats by specifying "--format=xml,json".
+                                Implicitly uses background mode.
+
+    Miscellaneous options:
       --debug                   Enable debug messages
       --version                 Show version information
       -h --help                 Show this screen
 
     Output modes:
 
-        "uspto-peds get ..."  will download the document and print the result to STDOUT.
-        "uspto-peds save ..." will save the document to the designated target directory, defaulting to the current path.
+        "uspto-peds get ..."        will download the document and print the result to STDOUT.
+        "uspto-peds save ..."       will save the document to the target directory, defaulting to the current path.
+        "uspto-peds bulk get ..."   will download multiple documents and print the result to STDOUT.
+        "uspto-peds bulk save ..."  will download multiple documents and save them to the target directory.
 
 
     Examples:
@@ -91,8 +104,14 @@ Command line
         # Download granted patent by patent number
         uspto-peds get "PP28532" --type=patent --format=xml
 
-        # Download granted patent by patent number and save to /var/spool/uspto-pair/PP28532.xml
-        uspto-peds save "PP28532" --type=patent --format=xml --directory=/var/spool/uspto-pair
+        # Download granted patent by patent number and save to /var/spool/uspto/PP28532.peds.xml
+        uspto-peds save "PP28532" --type=patent --format=xml --directory=/var/spool/uspto
+
+
+    Bulk examples:
+
+        # Download all documents from numbers.txt and save them /var/spool/uspto/$number.peds.(xml|json)
+        uspto-peds bulk save --numberfile=numbers.txt --format=xml,json --pretty --directory=/var/spool/uspto --wait
 
 
 ******

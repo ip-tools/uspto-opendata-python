@@ -10,12 +10,12 @@ class UsptoPairBulkDataClient(UsptoGenericBulkDataClient):
     Python client for accessing the USPTO PAIR Bulk Data API (https://pairbulkdata.uspto.gov/).
     See also: https://pairbulkdata.uspto.gov/#/api-documentation
     """
+    DATASOURCE_NAME      = 'pbd'
+
     QUERY_URL            = 'https://pairbulkdata.uspto.gov/api/queries'
     PACKAGE_REQUEST_URL  = 'https://pairbulkdata.uspto.gov/api/queries/{query_id}/package?format={format}'
     PACKAGE_STATUS_URL   = 'https://pairbulkdata.uspto.gov/api/queries/{query_id}?format={format}'
     PACKAGE_DOWNLOAD_URL = 'https://pairbulkdata.uspto.gov/api/queries/{query_id}/download?format={format}'
-
-    FILENAME_SOURCE      = 'pbd'
 
 
 if __name__ == '__main__':
