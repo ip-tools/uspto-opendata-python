@@ -12,6 +12,8 @@ requires = [
     'beautifulsoup4==4.6.0',
     'docopt==0.6.2',
     'pathvalidate==0.16.2',
+    'lxml==4.1.0',
+    'jsonpointer==1.12',
 ]
 
 test_requires = [

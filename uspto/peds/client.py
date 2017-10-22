@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # (c) 2017 Andreas Motl <andreas@ip-tools.org>
 import logging
+from uspto.peds.document import UsptoPatentExaminationDataSystemDocument
 from uspto.util.client import UsptoGenericBulkDataClient, download_and_print
 
 logger = logging.getLogger(__name__)
@@ -16,6 +17,8 @@ class UsptoPatentExaminationDataSystemClient(UsptoGenericBulkDataClient):
     PACKAGE_REQUEST_URL  = 'https://ped.uspto.gov/api/queries/{query_id}/package?format={format}'
     PACKAGE_STATUS_URL   = 'https://ped.uspto.gov/api/queries/{query_id}?format={format}'
     PACKAGE_DOWNLOAD_URL = 'https://ped.uspto.gov/api/queries/{query_id}/download?format={format}'
+
+    document_factory     = UsptoPatentExaminationDataSystemDocument
 
 
 if __name__ == '__main__':

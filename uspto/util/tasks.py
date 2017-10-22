@@ -46,27 +46,46 @@ class GenericDownloadTask(celery.Task):
     def download(self):
         logger.info('Starting download job with query=%s', self.query)
         self.update_state(state='PROGRESS', meta={'stage': 'downloading', 'query': self.query})
-        self.result.update(self.client.download(**self.query))
+        result = self.client.download(**self.query)
+        self.result.update(result)
+
 
     def finish(self):
         self.update_state(state='PROGRESS', meta={'stage': 'finishing'})
-        logger.info('Finishing with options: %s', self.options)
         if self.options.get('save'):
+            logger.info('Storing with options: %s', self.options)
+
+            document = self.client.document_factory(data=self.result)
+            document_identifiers = document.get_identifiers()
             directory = self.options.get('directory')
+
             for format in to_list(self.query.get('format')):
 
-                filepath = get_document_path(directory, self.query.get('number'), format, self.client.DATASOURCE_NAME)
+                # Compute file name
+                if self.options.get('use_application_id'):
+                    filename = document_identifiers['application']
+                else:
+                    filename = self.query.get('number')
+
+                # Compute file path
+                filepath = get_document_path(directory, filename, format, self.client.DATASOURCE_NAME)
+
+                # Pre-flight checks
                 if os.path.exists(filepath):
                     if not self.options.get('overwrite'):
                         logger.warning('File "%s" already exists. Use --overwrite.', filepath)
+                        continue
 
+                # Get payload by format
                 payload = self.result[format]
                 if format == 'json' and self.options.get('pretty'):
                     payload = json.dumps(json.loads(payload), indent=4)
 
+                # Save file
                 open(filepath, 'w').write(payload)
                 logger.info('Saved document to {}'.format(filepath))
 
+                # Bookkeeping: Aggregate target files
                 self.result['metadata']['files'].append(filepath)
 
 

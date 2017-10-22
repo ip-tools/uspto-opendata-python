@@ -55,9 +55,9 @@ Command line
 
     Usage:
       uspto-peds get  <document-number> --type=publication --format=xml [--pretty] [--background] [--wait] [--debug]
-      uspto-peds save <document-number> --type=publication --format=xml [--pretty] [--directory=/var/spool/uspto] [--overwrite] [--background] [--wait] [--debug]
+      uspto-peds save <document-number> --type=publication --format=xml [--pretty] [--directory=/var/spool/uspto] [--use-application-id] [--overwrite] [--background] [--wait] [--debug]
       uspto-peds bulk get  --numberfile=numbers.txt --format=xml,json [--pretty] [--wait] [--debug]
-      uspto-peds bulk save --numberfile=numbers.txt --format=xml,json [--pretty] --directory=/var/spool/uspto [--overwrite] [--wait] [--debug]
+      uspto-peds bulk save --numberfile=numbers.txt --format=xml,json [--pretty] --directory=/var/spool/uspto [--use-application-id] [--overwrite] [--wait] [--debug]
       uspto-peds info
       uspto-peds --version
       uspto-peds (-h | --help)
@@ -66,10 +66,13 @@ Command line
       --type=<type>             Document type, one of "publication", "application" or "patent".
       --format=<target>         Data format, one of "xml" or "json".
       --pretty                  Pretty-print output data. Currently applies to "--format=json" only.
-      --directory=<directory>   Save downloaded to documents to designated target directory.
-      --overwrite               When saving documents, overwrite already existing documents.
       --background              Run the download process in the background.
       --wait                    Wait for the background download to finish.
+
+    Save options:
+      --directory=<directory>   Save downloaded to documents to designated target directory.
+      --use-application-id      When saving documents, use the application identifier as filename.
+      --overwrite               When saving documents, overwrite already existing documents.
 
     Bulk options:
       --numberfile=<numberfile> Read document numbers from file.

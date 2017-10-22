@@ -181,12 +181,12 @@ class UsptoGenericBulkDataClient:
         if do_xml:
             package_zip = self.download_package(query_id, 'XML')
             payload_xml = self.unzip_package(package_zip)
-            result['xml'] = payload_xml.decode('utf-8')
+            result['xml'] = payload_xml
 
         if do_json:
             package_zip = self.download_package(query_id, 'JSON')
             payload_json = self.unzip_package(package_zip)
-            result['json'] = payload_json.decode('utf-8')
+            result['json'] = payload_json
 
         return result
 

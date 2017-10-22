@@ -14,9 +14,9 @@ def run_command(client, options):
     """
     Usage:
       {program} get  <document-number> --type=publication --format=xml [--pretty] [--background] [--wait] [--debug]
-      {program} save <document-number> --type=publication --format=xml [--pretty] [--directory=/var/spool/uspto] [--overwrite] [--background] [--wait] [--debug]
+      {program} save <document-number> --type=publication --format=xml [--pretty] [--directory=/var/spool/uspto] [--use-application-id] [--overwrite] [--background] [--wait] [--debug]
       {program} bulk get  --numberfile=numbers.txt --format=xml,json [--pretty] [--wait] [--debug]
-      {program} bulk save --numberfile=numbers.txt --format=xml,json [--pretty] --directory=/var/spool/uspto [--overwrite] [--wait] [--debug]
+      {program} bulk save --numberfile=numbers.txt --format=xml,json [--pretty] --directory=/var/spool/uspto [--use-application-id] [--overwrite] [--wait] [--debug]
       {program} info
       {program} --version
       {program} (-h | --help)
@@ -25,10 +25,13 @@ def run_command(client, options):
       --type=<type>             Document type, one of "publication", "application" or "patent".
       --format=<target>         Data format, one of "xml" or "json".
       --pretty                  Pretty-print output data. Currently applies to "--format=json" only.
-      --directory=<directory>   Save downloaded to documents to designated target directory.
-      --overwrite               When saving documents, overwrite already existing documents.
       --background              Run the download process in the background.
       --wait                    Wait for the background download to finish.
+
+    Save options:
+      --directory=<directory>   Save downloaded to documents to designated target directory.
+      --use-application-id      When saving documents, use the application identifier as filename.
+      --overwrite               When saving documents, overwrite already existing documents.
 
     Bulk options:
       --numberfile=<numberfile> Read document numbers from file.
@@ -53,19 +56,7 @@ def run_command(client, options):
     # Debugging
     #print('options: {}'.format(options))
 
-    document_number = options.get('<document-number>')
     document_format = options.get('--format')
-
-    # Pre-flight checks
-    if not options.get('bulk') and options.get('save'):
-        directory = options.get('--directory') or os.path.curdir
-        filepath = get_document_path(directory, document_number, document_format, source=client.DATASOURCE_NAME)
-        if os.path.exists(filepath):
-            if not options.get('--overwrite'):
-                raise KeyError('File "{}" already exists. Use --overwrite.'.format(filepath))
-
-        options['file'] = filepath
-
 
     # Single document acquisition
     if not options.get('bulk'):
@@ -75,20 +66,21 @@ def run_command(client, options):
 
         # B. Process result
         if result:
-            process_single_result(result, options)
+            process_single_result(client, result, options)
 
     # Bulk document acquisition
     else:
 
         document_format = read_list(document_format)
 
-        # Propagate options to background task
+        # Propagate some options to background task
         task_options = {
             'save': options.get('save'),
             'pretty': options.get('--pretty'),
             'directory': options.get('--directory'),
             'overwrite': options.get('--overwrite'),
-            }
+            'use_application_id': options.get('--use-application-id'),
+        }
 
         query = [
             {'type': 'publication', 'number': 'US20170293197A1', 'format': document_format},
@@ -153,27 +145,50 @@ def acquire_single_document(client, options):
 
     return result
 
-def process_single_result(result, options):
+def process_single_result(client, result, options):
 
+    document_number = options.get('<document-number>')
     document_format = options.get('--format')
 
-    # Choose output format from user selection
+    # A. Choose output format from user selection
     payload = result[document_format]
 
-    # Prettify result payload
+    # B. Compute document identifiers
+    document = client.document_factory(data=result)
+    document_identifiers = document.get_identifiers()
+    logger.info('Document identifiers: %s', document_identifiers)
+
+
+    # C. Output
+
+    # 1. Prettify result payload
     if options.get('--pretty'):
         if document_format == 'json':
             payload = json.dumps(json.loads(payload), indent=4)
 
-    # Output mode
-
-    # 1. Print to STDOUT
+    # 2. Print to STDOUT
     if options.get('get'):
         print(payload)
 
-    # 2. Save to filesystem
+    # 3. Save to filesystem
     elif options.get('save'):
-        filepath = options['file']
+
+        # Compute file name
+        if options.get('--use-application-id'):
+            filename = document_identifiers['application']
+        else:
+            filename = document_number
+
+        # Compute file path
+        directory = options.get('--directory') or os.path.curdir
+        filepath = get_document_path(directory, filename, document_format, source=client.DATASOURCE_NAME)
+
+        # Pre-flight checks
+        if os.path.exists(filepath):
+            if not options.get('--overwrite'):
+                raise KeyError('File "{}" already exists. Use --overwrite.'.format(filepath))
+
+        # Save file
         open(filepath, 'w').write(payload)
         logger.info('Saved document to {}'.format(filepath))
 
