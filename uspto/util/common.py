@@ -12,8 +12,8 @@ def to_list(obj):
         obj = [obj, ]
     return obj
 
-def read_list(string, separator=u','):
-    result = map(unicode.strip, string.split(separator))
+def read_list(data, separator=u','):
+    result = list(map(lambda x: x.strip(), data.split(separator)))
     if len(result) == 1 and not result[0]:
         result = []
     return result

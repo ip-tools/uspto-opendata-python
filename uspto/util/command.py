@@ -116,7 +116,7 @@ def run_command(client, options):
             # When in "save" mode, accumulate and print filenames only
             if options.get('save'):
                 files = []
-                for key, entry in result.iteritems():
+                for key, entry in result.items():
                     files += entry['metadata']['files']
                 result = files
 
