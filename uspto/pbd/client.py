@@ -29,8 +29,8 @@ if __name__ == '__main__':
 
     # Published applications by publication number
     # US2017293197A1: appEarlyPubNumber:(2017/0293197)
-    #download_and_print(client, number='2017/0293197', type='publication')
-    download_and_print(client, number='2017-0293197')
+    download_and_print(client, number='2017/0293197', type='publication')
+    #download_and_print(client, number='2017-0293197')
     #download_and_print(client, number='20170293197')  # No results
 
     # Published applications by application number

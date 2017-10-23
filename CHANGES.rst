@@ -13,6 +13,7 @@ development
 - Don't use number from "--numberfile" when prefixed with "#"
 - Improve exception handling and error response for bulk acquisition mode
 - Improve Celery bootstrapping again
+- Add API search mode, refactoring and cleanups, update API and command line documentation
 
 2017-10-22 0.4.0
 ================

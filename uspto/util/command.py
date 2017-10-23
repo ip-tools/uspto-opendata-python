@@ -4,8 +4,7 @@ import os
 import sys
 import json
 import logging
-from docopt import docopt, DocoptExit
-from uspto.util.common import get_document_path, read_list, normalize_options, read_numbersfile
+from uspto.util.common import get_document_path, read_list, normalize_options, read_numbersfile, get_archive_path
 from uspto.util.numbers import guess_type_from_number, format_number_for_source
 
 logger = logging.getLogger(__name__)
@@ -19,11 +18,12 @@ def run_command(client, options):
       {program} save <document-number> --format=xml [--type=publication] [--pretty] [--directory=/var/spool/uspto] [--use-application-id] [--overwrite] [--background] [--wait] [--debug]
       {program} bulk get  --numberfile=numbers.txt --format=xml,json [--pretty] [--use-application-id] [--wait] [--debug]
       {program} bulk save --numberfile=numbers.txt --format=xml,json [--pretty] --directory=/var/spool/uspto [--use-application-id] [--overwrite] [--wait] [--debug]
+      {program} search [<expression>] [--filter=filter] [--download] [--format=xml,json] [--directory=/var/spool/uspto] [--debug]
       {program} info
       {program} --version
       {program} (-h | --help)
 
-    Acquisition options:
+    Document acquisition options:
       <document-number>         Document number, e.g. 2017/0293197, US20170293197A1, PP28532, 15431686.
                                 Format depends on data source.
       --type=<type>             Document type, one of "publication", "application", "patent" or "auto".
@@ -31,6 +31,19 @@ def run_command(client, options):
                                 (application, publication, patent) from the document number itself.
       --format=<target>         Data format, one of "xml" or "json".
                                 In bulk mode, it can also be "--type=xml,json".
+
+    Search options:
+      <expression>              Search expression for generic querying.
+                                Examples:
+
+                                - firstNamedApplicant:(nasa)
+                                - patentTitle:(network AND security) AND appStatus_txt:(patented)
+                                - appCls:(701) AND appStatus_txt:(patented)
+
+      --filter=<filter>         Filter expression.
+                                Example:
+
+                                - appFilingDate:[2000-01-01T00:00:00Z TO 2005-12-31T23:59:59Z]
 
     Output options:
       --pretty                  Pretty-print output data. This currently applies to "--format=json" only.
@@ -74,25 +87,52 @@ def run_command(client, options):
 
     # Debugging
     #print('options: {}'.format(options))
+    if options.get('search'):
+        expression = options.get('<expression>') or '*:*'
+        filter = options.get('--filter')
+        result = client.search(expression, filter=filter, start=20)
 
-    # A. Single document acquisition
-    if not options.get('bulk'):
+        if options.get('--download'):
+            query_id = result['metadata']['queryId']
+            document_format = read_list(options.get('--format'))
+            result = client.download(query_id, format=document_format, progressbar=True)
+            for format, payload_zip in result.items():
 
-        # 1. Run document acquisition
-        result = acquire_single_document(client, options)
+                directory = options.get('--directory') or os.path.curdir
+                filename = expression
+                if filter:
+                    filename += '-' + filter
+                filepath = get_archive_path(directory, filename, format=format, source=client.DATASOURCE_NAME)
 
-        # 2. Process result
-        if result == ASYNC_RESULT:
-            pass
-        elif result:
-            process_single_result(client, result, options)
+                # FIXME: Honor --overwrite option
+                logger.info('Saving archive file to {}'.format(os.path.abspath(filepath)))
+                open(filepath, 'wb').write(payload_zip)
+
         else:
-            logger.error('No results.')
-            sys.exit(1)
+            print(json.dumps(result, indent=4))
 
-    # B. Bulk document acquisition
+        #pprint(result)
+
     else:
-        acquire_multiple_documents(client, options)
+
+        # A. Single document acquisition
+        if not options.get('bulk'):
+
+            # 1. Run document acquisition
+            result = acquire_single_document(client, options)
+
+            # 2. Process result
+            if result == ASYNC_RESULT:
+                pass
+            elif result:
+                process_single_result(client, result, options)
+            else:
+                logger.error('No results.')
+                sys.exit(1)
+
+        # B. Bulk document acquisition
+        else:
+            acquire_multiple_documents(client, options)
 
 
 def acquire_single_document(client, options):
@@ -108,7 +148,7 @@ def acquire_single_document(client, options):
 
     # 1. Synchronous mode
     if not options.get('--background'):
-        result = client.download(**query)
+        result = client.download_document(**query)
 
     # 2. Asynchronous mode
     else:
@@ -168,15 +208,14 @@ def process_single_result(client, result, options):
                 raise KeyError('File "{}" already exists. Use --overwrite.'.format(filepath))
 
         # Save file
+        logger.info('Saving document file to {}'.format(os.path.abspath(filepath)))
         open(filepath, 'w').write(payload)
-        logger.info('Saved document to {}'.format(filepath))
 
 
 def acquire_multiple_documents(client, options):
 
     # Evaluate multiple document formats
-    document_format = options.get('--format')
-    document_format = read_list(document_format)
+    document_format = read_list(options.get('--format'))
 
     # Propagate some options to background task
     task_options = normalize_options(options)

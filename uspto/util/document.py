@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 class GenericDocument:
 
-    def __init__(self, xml=None, json=None, data=None):
+    def __init__(self, data=None, xml=None, json=None):
         data = data or {}
         self.xml  = xml or data.get('xml')
         self.json = json or data.get('json')

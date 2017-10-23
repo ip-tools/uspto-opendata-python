@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # (c) 2017 Andreas Motl <andreas@ip-tools.org>
 import celery
-from uspto.util.tasks import GenericDownloadTask
+from uspto.util.tasks import GenericDownloadTask, AsynchronousDownloader
 from uspto.pbd.client import UsptoPairBulkDataClient
 
 class UsptoPairBulkDataDownloadTask(GenericDownloadTask):
@@ -15,3 +15,6 @@ def download_task(self, query, options=None):
     http://docs.celeryproject.org/en/latest/whatsnew-4.0.html#the-task-base-class-no-longer-automatically-register-tasks
     """
     return self.process(query, options)
+
+class UsptoPairBulkDataDownloader(AsynchronousDownloader):
+    task_function = download_task

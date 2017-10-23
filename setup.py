@@ -14,6 +14,8 @@ requires = [
     'pathvalidate==0.16.2',
     'lxml==4.1.0',
     'jsonpointer==1.12',
+    'clint==0.5.1',
+    'awesome-slugify==1.6.5',
 ]
 
 test_requires = [

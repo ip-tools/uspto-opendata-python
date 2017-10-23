@@ -6,7 +6,9 @@ import logging
 import zipfile
 import requests
 from io import BytesIO
+from pprint import pprint
 from bs4 import BeautifulSoup
+from clint.textui import progress
 from uspto.util.common import to_list, SmartException
 from uspto.util.numbers import guess_type_from_number
 
@@ -18,25 +20,48 @@ class UsptoGenericBulkDataClient:
         self.session = requests.Session()
         self.downloader = None
 
-    def query(self, searchText, df='patentTitle'):
-        logger.info('Querying for %s', searchText)
-        response = self.session.post(self.QUERY_URL, json={
-            'searchText': searchText,
-            'df': df,
+    def query(self, expression, filter=None, sort=None, start=None, rows=None, default_field=None):
+
+        # https://lucene.apache.org/solr/guide/6_6/common-query-parameters.html
+
+        # Set defaults
+        default_field = default_field or 'patentTitle'
+        filter = filter or []
+        sort = sort or 'applId asc'
+
+        # Filter must be a list
+        filter = to_list(filter)
+
+        logger.info('Querying for expression=%s, filter=%s, sort=%s', expression, filter, sort)
+        solr_query = {
+            'searchText': expression,
+            'df': default_field,
             'facet': True,
             'fl': '*',
-            'fq': [],
+            'fq': filter,
             'mm': '100%',
             'qf': 'appEarlyPubNumber applId appLocation appType appStatus_txt appConfrNumber appCustNumber '
                   'appGrpArtNumber appCls appSubCls appEntityStatus_txt patentNumber patentTitle primaryInventor '
                   'firstNamedApplicant appExamName appExamPrefrdName appAttrDockNumber appPCTNumber appIntlPubNumber '
                   'wipoEarlyPubNumber pctAppType firstInventorFile appClsSubCls rankAndInventorsList',
-            'sort': 'applId asc',
-            'start': '0',
-        })
+            'sort': sort,
+        }
 
+        if start is not None:
+            solr_query.update(start=str(start))
+
+        if rows is not None:
+            solr_query.update(rows=str(rows))
+
+        #pprint(solr_query)
+
+        # Submit the query to the Solr search service
+        response = self.session.post(self.QUERY_URL, json=solr_query)
+        #print response.text
+
+        # Check response and scrape appropriate error message from HTML on failure
         if response.status_code != 200:
-            logger.error('Error while querying for %s\n%s', searchText, response.text)
+            logger.error('Error while querying for %s\n%s', expression, response.text)
             if response.headers['Content-Type'].startswith('text/html'):
                 soup = BeautifulSoup(response.text, 'html.parser')
                 title = soup.find('title')
@@ -47,20 +72,26 @@ class UsptoGenericBulkDataClient:
                     message += '. ' + reason
                 message += ' (status={})'.format(response.status_code)
                 raise ValueError(message)
+            else:
+                raise ValueError('Search error with response of unknown Content-Type')
 
         return response.json()
 
-    def query_application(self, applicationId):
-        searchText = 'applId:({})'.format(applicationId)
-        return self.query(searchText)
+    def search(self, *args, **kwargs):
+        total_response = self.query(*args, **kwargs)
+        search_response = total_response['queryResults']['searchResponse']
 
-    def query_publication(self, appEarlyPubNumber):
-        searchText = 'appEarlyPubNumber:({})'.format(appEarlyPubNumber)
-        return self.query(searchText)
+        # Main result payload
+        result = search_response['response']
 
-    def query_patent(self, patentNumber):
-        searchText = 'patentNumber:({})'.format(patentNumber)
-        return self.query(searchText)
+        # Pick some other important information
+        metadata = {
+            'indexLastUpdatedDate': total_response['queryResults']['indexLastUpdatedDate'],
+            'queryId': total_response['queryResults']['queryId'],
+            'responseHeader': search_response['responseHeader']
+        }
+        result.update(metadata=metadata)
+        return result
 
     def request_package(self, query_id, format):
 
@@ -123,13 +154,24 @@ class UsptoGenericBulkDataClient:
         if response.status_code != 403:
             return True
 
-    def download_package(self, query_id, format):
+    def download_package(self, query_id, format, progressbar=False):
         url = self.PACKAGE_DOWNLOAD_URL.format(query_id=query_id, format=format)
         logger.info('Downloading package for queryId=%s with format=%s. url=%s', query_id, format, url)
-        response = self.session.get(url)
+        response = self.session.get(url, stream=progressbar)
         assert response.status_code in [200, 302], 'No download package. status={}'.format(response.status_code)
         assert response.headers['Content-Type'] == 'application/zip'
-        return response.content
+        if not progressbar:
+            return response.content
+        else:
+            # https://stackoverflow.com/questions/15644964/python-progress-bar-and-downloads/20943461#20943461
+            total_length = int(response.headers.get('Content-Length'))
+            buffer = BytesIO()
+            for chunk in progress.bar(response.iter_content(chunk_size=1024), expected_size=(total_length/1024) + 1, filled_char='='):
+                if chunk:
+                    buffer.write(chunk)
+
+            buffer.seek(0)
+            return buffer.read()
 
     def unzip_package(self, payload_zip):
 
@@ -143,33 +185,16 @@ class UsptoGenericBulkDataClient:
         payload_file = zip.read(filenames[0])
         return payload_file
 
-    def download(self, **query):
+    def download(self, query_id, format=None, progressbar=False):
 
-        query['type'] = query.get('type', 'auto') or 'auto'
-
-        if query['type'] == 'auto':
-            query['type'] = guess_type_from_number(query['number'])
-
-        if query['type'] == 'application':
-            response = self.query_application(query['number'])
-        elif query['type'] == 'publication':
-            response = self.query_publication(query['number'])
-        elif query['type'] == 'patent':
-            response = self.query_patent(query['number'])
-        else:
-            raise UnknownDocumentType('Unknown document type for {}'.format(query), query=query)
-
-        if not response['queryResults']['searchResponse']['response']['numFound'] >= 1:
-            raise NoResults('No results when searching for {}.'.format(query), query=query)
-
-        query_id = response['queryId']
+        format = format or []
+        formats = to_list(format)
 
         # Which formats are requested?
-        if 'format' not in query:
+        if not formats:
             do_xml = True
             do_json = True
         else:
-            formats = to_list(query['format'])
             do_xml = 'xml' in formats
             do_json = 'json' in formats
 
@@ -185,16 +210,61 @@ class UsptoGenericBulkDataClient:
         # Download
         result = {}
         if do_xml:
-            package_zip = self.download_package(query_id, 'XML')
-            payload_xml = self.unzip_package(package_zip)
-            result['xml'] = payload_xml
+            result['xml'] = self.download_package(query_id, 'XML', progressbar=progressbar)
 
         if do_json:
-            package_zip = self.download_package(query_id, 'JSON')
-            payload_json = self.unzip_package(package_zip)
-            result['json'] = payload_json
+            result['json'] = self.download_package(query_id, 'JSON', progressbar=progressbar)
 
         return result
+
+    def download_document(self, *args, **kwargs):
+
+        if kwargs:
+            query = kwargs
+        elif args:
+            query = {'number': args[0]}
+
+        # Defaults
+        query['type'] = query.get('type', 'auto') or 'auto'
+        if query['type'] == 'auto':
+            query['type'] = guess_type_from_number(query['number'])
+
+        query['format'] = query.get('format', ['xml', 'json'])
+
+        if query['type'] == 'application':
+            response = self.query_application(query['number'])
+        elif query['type'] == 'publication':
+            response = self.query_publication(query['number'])
+        elif query['type'] == 'patent':
+            response = self.query_patent(query['number'])
+        else:
+            raise UnknownDocumentType('Unknown document type for {}'.format(query), query=query)
+
+        if response['queryResults']['searchResponse']['response']['numFound'] == 0:
+            raise NoResults('No results when searching for {}.'.format(query), query=query)
+
+        query_id = response['queryId']
+
+        result = self.download(query_id, query['format'])
+
+        for format, package_zip in result.items():
+            payload = self.unzip_package(package_zip)
+            result[format] = payload
+
+        return result
+
+    def query_application(self, applicationId):
+        expression = 'applId:({})'.format(applicationId)
+        return self.query(expression)
+
+    def query_publication(self, appEarlyPubNumber):
+        expression = 'appEarlyPubNumber:({})'.format(appEarlyPubNumber)
+        return self.query(expression)
+
+    def query_patent(self, patentNumber):
+        expression = 'patentNumber:({})'.format(patentNumber)
+        return self.query(expression)
+
 
 class NoResults(SmartException):
     pass
@@ -204,7 +274,7 @@ class UnknownDocumentType(SmartException):
 
 def download_and_print(client, **query):
 
-    result = client.download(**query)
+    result = client.download_document(**query)
 
     print('-' * 42)
     print('XML format')

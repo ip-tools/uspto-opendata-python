@@ -3,7 +3,9 @@
 import os
 import sys
 import logging
+import slugify
 import pathvalidate
+from datetime import datetime
 
 def to_list(obj):
     """Convert an object to a list if it is not already one"""
@@ -13,6 +15,8 @@ def to_list(obj):
     return obj
 
 def read_list(data, separator=u','):
+    if data is None:
+        return []
     result = list(map(lambda x: x.strip(), data.split(separator)))
     if len(result) == 1 and not result[0]:
         result = []
@@ -38,10 +42,27 @@ def normalize_options(options):
         normalized[key] = value
     return normalized
 
-def get_document_path(directory, number, format, source=None):
+def get_document_path(directory, name, format, source=None):
     if source:
         source = source.lower() + '.'
-    filename = pathvalidate.sanitize_filename('{name}.{source}{suffix}'.format(name=number.upper(), source=source, suffix=format.lower()))
+    filename = pathvalidate.sanitize_filename('{name}.{source}{suffix}'.format(
+        name=name.upper(), source=source.lower(), suffix=format.lower()))
+    filepath = os.path.join(directory, filename)
+    return filepath
+
+def get_archive_path(directory, name, format, source=None):
+
+    if source:
+        source = '-' + source.lower()
+
+    timestamp = datetime.utcnow().strftime('%Y%m%dT%H%M%S')
+
+    name = pathvalidate.sanitize_filename(name)
+    name = slugify.slugify_filename(name)
+
+    filename = 'uspto{source}_{timestamp}_{name}.{format}.zip'.format(
+        name=name, timestamp=timestamp, source=source.lower(), format=format.lower())
+
     filepath = os.path.join(directory, filename)
     return filepath
 

@@ -2,11 +2,25 @@
 USPTO Patent Examination Data System API client
 ###############################################
 
+*****
+About
+*****
 The USPTO Patent Examination Data System (PEDS) contains bibliographic, published document and patent term extension data
 in Public PAIR from 1981 to present. There is also some data dating back to 1935.
 
 The PEDS system provides additional information concerning the transaction activity that has occurred for each patent.
 The transaction history includes the transaction date, transaction code and transaction description for each transaction activity.
+
+The API documentation can be found at https://ped.uspto.gov/peds/#/apiDocumentation.
+
+
+************
+Introduction
+************
+This software library implements a client to access the PEDS API through the one-stop
+``UsptoPatentExaminationDataSystemClient`` class and also provides a respective command line program ``uspto-peds``.
+
+Both can be used for searching and for downloading packages of bundled artefacts.
 
 
 ********
@@ -17,34 +31,104 @@ API
 ===
 The API has two different modes, synchronous and asynchronous.
 
-Synchronous mode::
+Synchronous mode
+----------------
+Simple usage::
 
-    from uspto.peds.api import UsptoPatentExaminationDataSystemClient
+    from uspto.peds.client import UsptoPatentExaminationDataSystemClient
     client = UsptoPatentExaminationDataSystemClient()
 
-    # Download application by application number
-    result = client.download(type='application', number='15431686')
+    # Download document by document number
+    # Automatically guesses the document type (application, publication, patent) from the document number schema
+    # Will acquire both XML and JSON formats
+    result = client.download_document('PP28532')
 
-    # Download published application by early publication number
-    result = client.download(type='publication', number='US20170293197A1')
+Advanced usage::
 
-    # Download granted patent by patent number
-    result = client.download(type='patent', number='PP28532')
+    # Explicitly request a document by application number, acquire XML format only
+    result = client.download_document(type='application', number='15431686', format='xml')
 
-Asynchronous mode::
+    # Download published application by early publication number, acquire JSON format only
+    result = client.download_document(type='publication', number='US20170293197A1', format='json')
 
-    from uspto.util.tasks import AsynchronousDownloader
-    from uspto.peds.tasks import download_task
-    downloader = AsynchronousDownloader(download_task)
+    # Download granted patent by patent number, acquire both XML and JSON formats
+    result = client.download_document(type='patent', number='PP28532', format=['xml', 'json'])
+
+
+Asynchronous mode
+-----------------
+For running the background scheduler, start redis and celery::
+
+    redis-server
+    celery worker --app uspto.tasks --loglevel=info
+
+Simple usage::
+
+    from uspto.peds.tasks import UsptoPatentExaminationDataSystemDownloader
+    downloader = UsptoPatentExaminationDataSystemDownloader()
 
     # Start downloading single document
-    downloader.run({'type': 'patent', 'number': 'PP28532'})
+    # Automatically guesses the document type
+    # Will acquire both XML and JSON formats
+    downloader.run('PP28532')
 
-    # Start downloading multiple documents
-    downloader.run([{'type': 'publication', 'number': 'US20170293197A1'}, {'type': 'patent', 'number': 'PP28532'}])
+    # Start downloading multiple documents, with document type autoguessing and dual format acquisition
+    downloader.run(['PP28532', 'US20170293197A1'])
 
     # Wait until results arrived
     result = downloader.poll()
+
+Advanced usage::
+
+    # Start downloading single document, explicitly requesting a patent document in XML format
+    downloader.run({'type': 'patent', 'number': 'PP28532', 'format': 'xml'})
+
+    # Start downloading multiple documents, each with both XML and JSON formats
+    downloader.run([{'type': 'publication', 'number': 'US20170293197A1'}, {'type': 'patent', 'number': 'PP28532'}])
+
+    # Save multiple documents to designated directory using the application identifier as filename
+    # The first document should be loaded in XML format, the second one in both XML and JSON formats
+    job = downloader.run(
+        [
+            {'type': 'publication', 'number': 'US20170293197A1', 'format': 'xml'},
+            {'type': 'patent',      'number': 'PP28532',         'format': ['xml', 'json']},
+        ],
+        options = {
+            'save': True,
+            'directory': './tmp',
+            'overwrite': False,
+            'use-application-id': True,
+        }
+    )
+
+    # Is the job ready?
+    job.ready()
+    False
+
+    # Iterate the results after finishing
+    results = list(map(lambda task: task.result, job.results))
+
+
+Utilities
+---------
+The ``UsptoPatentExaminationDataSystemDocument`` class can be used to inquire information about the downloaded document::
+
+    from uspto.peds.client import UsptoPatentExaminationDataSystemClient
+    from uspto.peds.document import UsptoPatentExaminationDataSystemDocument
+    client = UsptoPatentExaminationDataSystemClient()
+
+    # Download document
+    result = client.download_document('PP28532')
+
+    # Get document identifiers
+    document = UsptoPatentExaminationDataSystemDocument(result)
+    document.get_identifiers()
+    {'patent': u'PP28532', 'application': u'14999644'}
+
+Another example::
+
+    UsptoPatentExaminationDataSystemDocument(client.download_document('US20170293197A1')).get_identifiers()
+    {'application': u'15431686', 'publication': u'US20170293197A1'}
 
 
 Command line
@@ -58,11 +142,12 @@ Command line
       uspto-peds save <document-number> --format=xml [--type=publication] [--pretty] [--directory=/var/spool/uspto] [--use-application-id] [--overwrite] [--background] [--wait] [--debug]
       uspto-peds bulk get  --numberfile=numbers.txt --format=xml,json [--pretty] [--use-application-id] [--wait] [--debug]
       uspto-peds bulk save --numberfile=numbers.txt --format=xml,json [--pretty] --directory=/var/spool/uspto [--use-application-id] [--overwrite] [--wait] [--debug]
+      uspto-peds search [<expression>] [--filter=filter] [--download] [--format=xml,json] [--directory=/var/spool/uspto] [--debug]
       uspto-peds info
       uspto-peds --version
       uspto-peds (-h | --help)
 
-    Acquisition options:
+    Document acquisition options:
       <document-number>         Document number, e.g. 2017/0293197, US20170293197A1, PP28532, 15431686.
                                 Format depends on data source.
       --type=<type>             Document type, one of "publication", "application", "patent" or "auto".
@@ -70,6 +155,19 @@ Command line
                                 (application, publication, patent) from the document number itself.
       --format=<target>         Data format, one of "xml" or "json".
                                 In bulk mode, it can also be "--type=xml,json".
+
+    Search options:
+      <expression>              Search expression for generic querying.
+                                Examples:
+
+                                - firstNamedApplicant:(nasa)
+                                - patentTitle:(network AND security) AND appStatus_txt:(patented)
+                                - appCls:(701) AND appStatus_txt:(patented)
+
+      --filter=<filter>         Filter expression.
+                                Example:
+
+                                - appFilingDate:[2000-01-01T00:00:00Z TO 2005-12-31T23:59:59Z]
 
     Output options:
       --pretty                  Pretty-print output data. This currently applies to "--format=json" only.
@@ -112,30 +210,37 @@ Command line
 
     Examples:
 
-        # Download published application by publication number in XML format
+        # Display published application by publication number in XML format
         uspto-peds get "US20170293197A1" --type=publication --format=xml
 
         # ... same in JSON format, with pretty-printing
         uspto-peds get "US20170293197A1" --type=publication --format=json --pretty
 
-        # Download published application by application number
+        # Display published application by application number
         uspto-peds get "15431686" --type=application --format=xml
 
-        # Download granted patent by patent number
+        # Display granted patent by patent number
         uspto-peds get "PP28532" --type=patent --format=xml
+
+        # Display granted patent by automatically guessing document type
+        uspto-peds get "PP28532" --format=xml
 
         # Download granted patent by patent number and save to /var/spool/uspto/PP28532.peds.xml
         uspto-peds save "PP28532" --type=patent --format=xml --directory=/var/spool/uspto
 
+    Bulk example:
 
-    Bulk examples:
-
-        # Download all documents from numbers.txt and save them to /var/spool/uspto/$number.peds.(xml|json)
+        # Download all documents from numbers.txt and save them /var/spool/uspto/$number.peds.(xml|json)
         uspto-peds bulk save --numberfile=numbers.txt --format=xml,json --pretty --directory=/var/spool/uspto --wait
 
+    Search examples:
 
-******
-Issues
-******
-- No transaction history data for ``applId:(15344906)``.
+        # Search for documents matching "applicant=nasa" and display polished JSON response
+        uspto-peds search 'firstNamedApplicant:(nasa)' --filter='appFilingDate:[2000-01-01T00:00:00Z TO 2017-12-31T23:59:59Z]'
+
+        # Search for documents matching "applicant=grohe" filed between 2010 and 2017
+        uspto-peds search 'firstNamedApplicant:(*grohe*)' --filter='appFilingDate:[2010-01-01T00:00:00Z TO 2017-12-31T23:59:59Z]'
+
+        # Search for documents matching "applicant=nasa" and download zip archives containing bundles in XML and JSON formats
+        uspto-peds search 'firstNamedApplicant:(nasa)' --download --format=xml,json --directory=/tmp
 

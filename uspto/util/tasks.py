@@ -44,6 +44,9 @@ class GenericDownloadTask(celery.Task):
         self.query = query
         self.options = options or {}
 
+        if isinstance(self.query, str):
+            self.query = {'number': self.query}
+
         logger.info('Starting download process for query=%s, options=%s', query, options)
         self.result = {'metadata': {'query': self.query, 'options': self.options, 'files': []}}
 
@@ -82,7 +85,7 @@ class GenericDownloadTask(celery.Task):
     def download(self):
         logger.info('Starting download job with query=%s', self.query)
         self.update_state(state='PROGRESS', meta={'stage': 'downloading', 'query': self.query})
-        result = self.client.download(**self.query)
+        result = self.client.download_document(**self.query)
         self.result.update(result)
 
     def enrich(self):
@@ -121,8 +124,8 @@ class GenericDownloadTask(celery.Task):
                     payload = json.dumps(json.loads(payload), indent=4)
 
                 # Save file
+                logger.info('Saving document file to {}'.format(os.path.abspath(filepath)))
                 open(filepath, 'w').write(payload)
-                logger.info('Saved document to {}'.format(filepath))
 
                 # Bookkeeping: Aggregate target files
                 self.result['metadata']['files'].append(filepath)
@@ -130,8 +133,11 @@ class GenericDownloadTask(celery.Task):
 
 class AsynchronousDownloader:
 
-    def __init__(self, task_function):
-        self.task_function = task_function
+    def __init__(self, task_function=None):
+
+        if task_function:
+            self.task_function = task_function
+
         self.task = None
 
     def run(self, query, options=None):
@@ -143,6 +149,9 @@ class AsynchronousDownloader:
 
         # http://docs.celeryproject.org/en/latest/userguide/calling.html
 
+        if isinstance(query, str):
+            query = {'number': query}
+
         if isinstance(query, dict):
             self.task = self.task_function.delay(query, options)
 
@@ -150,6 +159,9 @@ class AsynchronousDownloader:
             tasks = [self.task_function.s(query, options) for query in query]
             task_group = celery.group(tasks)
             self.task = task_group.delay()
+
+        else:
+            raise TypeError('Unknown type for query {}. type={}'.format(query, type(query)))
 
         return self.task
 
