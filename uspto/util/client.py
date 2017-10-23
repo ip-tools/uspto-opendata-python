@@ -145,7 +145,7 @@ class UsptoGenericBulkDataClient:
 
     def download(self, **query):
 
-        query['type'] = query['type'] or 'auto'
+        query['type'] = query.get('type', 'auto') or 'auto'
 
         if query['type'] == 'auto':
             query['type'] = guess_type_from_number(query['number'])

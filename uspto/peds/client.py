@@ -29,20 +29,20 @@ if __name__ == '__main__':
 
     # Published applications by publication number
     # US2017293197A1: appEarlyPubNumber:(US2017293197A1)
-    download_and_print(client, publication='US2017293197A1')
-    #download_and_print(client, publication='US2017293197A1')
-    #download_and_print(client, publication='2017/0293197')  # No results
+    download_and_print(client, number='US2017293197A1', type='publication')
+    #download_and_print(client, number='US2017293197A1')
+    #download_and_print(client, number='2017/0293197')  # No results
 
     # Published applications by application number
     # US2017293197A1: applId:(15431686)
-    #download_and_print(client, application='15431686')
+    #download_and_print(client, number='15431686')
 
     # Granted patents by patent number
-    #download_and_print(client, patent='PP28532')
-    #download_and_print(client, patent='9788906')
-    #download_and_print(client, patent='D799980')
-    #download_and_print(client, patent='RE46571')
-    #download_and_print(client, patent='3525666')           # No results
+    #download_and_print(client, number='PP28532')
+    #download_and_print(client, number='9788906')
+    #download_and_print(client, number='D799980')
+    #download_and_print(client, number='RE46571')
+    #download_and_print(client, number='3525666')           # No results
 
     # Deleted: US11673P
-    #download_and_print(client, patent='PP11673')           # No results
+    #download_and_print(client, number='PP11673')           # No results
