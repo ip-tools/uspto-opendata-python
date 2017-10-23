@@ -56,47 +56,58 @@ Command line
     Usage:
       uspto-peds get  <document-number> --format=xml [--type=publication] [--pretty] [--background] [--wait] [--debug]
       uspto-peds save <document-number> --format=xml [--type=publication] [--pretty] [--directory=/var/spool/uspto] [--use-application-id] [--overwrite] [--background] [--wait] [--debug]
-      uspto-peds bulk get  --numberfile=numbers.txt --format=xml,json [--pretty] [--wait] [--debug]
+      uspto-peds bulk get  --numberfile=numbers.txt --format=xml,json [--pretty] [--use-application-id] [--wait] [--debug]
       uspto-peds bulk save --numberfile=numbers.txt --format=xml,json [--pretty] --directory=/var/spool/uspto [--use-application-id] [--overwrite] [--wait] [--debug]
       uspto-peds info
       uspto-peds --version
       uspto-peds (-h | --help)
 
-    General options:
+    Acquisition options:
       <document-number>         Document number, e.g. 2017/0293197, US20170293197A1, PP28532, 15431686.
                                 Format depends on data source.
       --type=<type>             Document type, one of "publication", "application", "patent" or "auto".
+                                When using "auto", the program tries to to guess the document number type
+                                (application, publication, patent) from the document number itself.
+      --format=<target>         Data format, one of "xml" or "json".
+                                In bulk mode, it can also be "--type=xml,json".
 
     Output options:
-      --format=<target>         Data format, one of "xml" or "json".
-      --pretty                  Pretty-print output data. Currently applies to "--format=json" only.
+      --pretty                  Pretty-print output data. This currently applies to "--format=json" only.
 
     Save options:
-      --directory=<directory>   Save downloaded to documents to designated target directory.
-      --use-application-id      When saving documents, use the application identifier as filename.
-      --overwrite               When saving documents, overwrite already existing documents.
+      --directory=<directory>   Save downloaded documents to designated target directory.
+      --use-application-id      Use the application identifier as filename.
+      --overwrite               Overwrite already existing documents.
 
-    Operation mode:
+    Background mode:
       --background              Run the download process in the background.
-      --wait                    Wait for the background download to finish.
+      --wait                    Wait for the background download job to finish.
 
     Bulk options:
-      --numberfile=<numberfile> Read document numbers from file.
-                                Apply heuristics to determine document number type (application, publication, patent).
+      --numberfile=<numberfile> Read document numbers from file. Implicitly uses "--background" mode.
+                                Guess document number type by implicitly using "--type=auto".
                                 Download multiple formats by specifying "--format=xml,json".
-                                Implicitly uses background mode.
 
     Miscellaneous options:
       --debug                   Enable debug messages
       --version                 Show version information
       -h --help                 Show this screen
 
-    Output modes:
 
-        "uspto-peds get ..."        will download the document and print the result to STDOUT.
-        "uspto-peds save ..."       will save the document to the target directory, defaulting to the current path.
-        "uspto-peds bulk get ..."   will download multiple documents and print the result to STDOUT.
-        "uspto-peds bulk save ..."  will download multiple documents and save them to the target directory.
+    Operation modes:
+
+        "uspto-peds get"             Download one document and print the result to STDOUT.
+
+        "uspto-peds save"            Download one document and save it to the target directory,
+                                     defaulting to the current working directory.
+
+
+        "uspto-peds bulk get"        Submit task for downloading multiple documents to the background job machinery.
+                                     After finishing, print the results to STDOUT when using the "--wait" option.
+
+        "uspto-peds bulk save"       Submit task for downloading multiple documents to the background job machinery.
+                                     While doing so, progressively save documents to the target directory.
+                                     After finishing, print the full file names to STDOUT when using the "--wait" option.
 
 
     Examples:

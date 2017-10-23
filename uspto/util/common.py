@@ -31,6 +31,13 @@ def setup_logging(level=logging.INFO):
         stream=sys.stderr,
         level=level)
 
+def normalize_options(options):
+    normalized = {}
+    for key, value in options.items():
+        key = key.strip('--<>')
+        normalized[key] = value
+    return normalized
+
 def get_document_path(directory, number, format, source=None):
     if source:
         source = source.lower() + '.'
