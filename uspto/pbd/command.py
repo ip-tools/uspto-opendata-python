@@ -2,10 +2,10 @@
 # (c) 2017 Andreas Motl <andreas@ip-tools.org>
 import logging
 from docopt import docopt, DocoptExit
+from uspto import __version__
 from uspto.pbd.client import UsptoPairBulkDataClient
 from uspto.util.command import run_command
 from uspto.util.common import boot_logging
-from uspto.version import __VERSION__
 """
 Python command line client for accessing the USPTO PAIR Bulk Data API (https://pairbulkdata.uspto.gov/).
 See also: https://pairbulkdata.uspto.gov/#/api-documentation
@@ -59,7 +59,7 @@ def run():
     commandline_schema = (run_command.__doc__ + run.__doc__).format(program=APP_NAME)
 
     # Read commandline options
-    options = docopt(commandline_schema, version=APP_NAME + ' ' + __VERSION__)
+    options = docopt(commandline_schema, version=APP_NAME + ' ' + __version__)
 
     # Start logging subsystem
     boot_logging(options)
