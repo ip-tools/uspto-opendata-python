@@ -55,7 +55,11 @@ class GenericDownloadTask(celery.Task):
         # to the dead letter exchange and we can manually inspect the situation.
         # http://docs.celeryproject.org/en/latest/userguide/tasks.html#reject
         except (NoResults, UnknownDocumentType) as ex:
-            raise celery.exceptions.Reject(reason=ex, requeue=False)
+            # FIXME: Task keeps being in PENDING state when rejected
+            #raise celery.exceptions.Reject(reason=ex, requeue=False)
+
+            # Workaround: Just re-raise the original exception
+            raise
 
         # Otherwise, let's retry again after some time
         except Exception as ex:

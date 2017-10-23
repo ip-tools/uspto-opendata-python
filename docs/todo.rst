@@ -22,14 +22,19 @@ Asynchronous processing
 
 Celery
 ======
-task.result and task.info contains the metadata dictionary while the task is running and then
-suddenly switches to containing the result or otherwise the exception object.
-This is a bit counter-intuitive.
-::
+1. task.result and task.info contains the metadata dictionary while the task is running and then
+   suddenly switches to containing the result or otherwise the exception object.
+   This is a bit counter-intuitive.
+   ::
 
-    print task._get_task_meta()
-    print type(task.result)
-    print type(task.info)
+        print task._get_task_meta()
+        print type(task.result)
+        print type(task.info)
+
+2. Task keeps being in PENDING state when rejected, see also:
+
+- https://github.com/celery/celery/issues/2944
+- https://github.com/celery/celery/issues/4222
 
 
 *****
