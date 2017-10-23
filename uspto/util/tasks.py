@@ -48,6 +48,7 @@ class GenericDownloadTask(celery.Task):
         # Download and store the document
         try:
             self.download()
+            self.enrich()
             self.store()
 
         # If this is an unrecoverable error, we reject it so that it's redelivered
@@ -78,21 +79,24 @@ class GenericDownloadTask(celery.Task):
         result = self.client.download(**self.query)
         self.result.update(result)
 
+    def enrich(self):
+        if self.options.get('use-application-id'):
+            document = self.client.document_factory(data=self.result)
+            document_identifiers = document.get_identifiers()
+            self.result['metadata'].update(document_identifiers=document_identifiers)
 
     def store(self):
         self.update_state(state='PROGRESS', meta={'stage': 'finishing'})
         if self.options.get('save'):
             logger.info('Storing with options: %s', self.options)
 
-            document = self.client.document_factory(data=self.result)
-            document_identifiers = document.get_identifiers()
             directory = self.options.get('directory')
 
             for format in to_list(self.query.get('format')):
 
                 # Compute file name
-                if self.options.get('use_application_id'):
-                    filename = document_identifiers['application']
+                if self.options.get('use-application-id'):
+                    filename = self.result['metadata']['document_identifiers']['application']
                 else:
                     filename = self.query.get('number')
 
@@ -179,7 +183,11 @@ class AsynchronousDownloader:
                         result = subtask.get()
                         logger.info('Download succeeded')
 
-                        key = result['metadata']['query']['number']
+                        if result['metadata']['options'].get('use-application-id'):
+                            key = result['metadata']['document_identifiers']['application']
+                        else:
+                            key = result['metadata']['query']['number']
+
                         results[key] = result
 
                     except Exception as ex:

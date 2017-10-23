@@ -8,6 +8,7 @@ development
 - Make "--type" argument optional by guessing document type from number
 - Improve command line option juggling and documentation
 - Properly retry failing tasks with Celery
+- Honor "--use-application-id" also when printing results to STDOUT in bulk mode
 
 2017-10-22 0.4.0
 ================
