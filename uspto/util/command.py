@@ -5,7 +5,7 @@ import sys
 import json
 import logging
 from docopt import docopt, DocoptExit
-from uspto.util.common import get_document_path, read_list, normalize_options
+from uspto.util.common import get_document_path, read_list, normalize_options, read_numbersfile
 from uspto.util.numbers import guess_type_from_number, format_number_for_source
 import uspto.celery                     # Must import here to enable communication with Celery
 
@@ -183,7 +183,7 @@ def acquire_multiple_documents(client, options):
     task_options = normalize_options(options)
 
     # Read numbers from file and compute list of queries
-    numbers = map(str.strip, open(options.get('--numberfile'), 'r').readlines())
+    numbers = read_numbersfile(options.get('--numberfile'))
     logger.info('Requesting numbers: %s', numbers)
     queries = []
     for number in numbers:

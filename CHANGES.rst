@@ -10,6 +10,7 @@ development
 - Properly retry failing tasks with Celery
 - Honor "--use-application-id" also when printing results to STDOUT in bulk mode
 - Fix Celery task reject behavior
+- Don't use number from "--numberfile" when prefixed with "#"
 
 2017-10-22 0.4.0
 ================

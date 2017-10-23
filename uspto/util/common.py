@@ -44,3 +44,9 @@ def get_document_path(directory, number, format, source=None):
     filename = pathvalidate.sanitize_filename('{name}.{source}{suffix}'.format(name=number.upper(), source=source, suffix=format.lower()))
     filepath = os.path.join(directory, filename)
     return filepath
+
+def read_numbersfile(filename):
+    numbers = open(filename, 'r').readlines()
+    numbers = map(str.strip, numbers)
+    numbers = filter(lambda number: not number.startswith('#'), numbers)
+    return numbers
