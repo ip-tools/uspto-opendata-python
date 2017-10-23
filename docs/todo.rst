@@ -11,6 +11,7 @@ Core
 - [x] Use "uscom:ApplicationNumberText" for identifying/storing documents, even across PBD/PEDS boundaries.
 - [x] Provide "type=auto" parameter for auto-guessing type
 - [o] Unify documentation between PBD and PEDS
+- [o] Retrieve more advanced search results than numbers only
 - [o] Implement uspto.util.format_number_for_source
 - [o] Release on PyPI using https://flit.readthedocs.io/
 - [o] Add tests

@@ -24,6 +24,8 @@ There is also some data dating back to 1935.
 The PEDS system provides additional information concerning the transaction activity that has occurred for each patent.
 The transaction history includes the transaction date, transaction code and transaction description for each transaction activity.
 
+The query syntax follows the standard Apache Solr search syntax, and the json documents returned also follow the Solr response formats.
+
 .. _PAIR Bulk Data (PBD): https://pairbulkdata.uspto.gov/
 .. _Patent Examination Data System (PEDS): https://ped.uspto.gov/
 
@@ -41,8 +43,14 @@ described by the 2013 Executive Order 13642 to make open and machine-readable da
 The API was conceived as part of the `USPTO Open Data Initiative`_, please also visit the `USPTO Open Data Portal`_
 and its `API catalog`_ for other new APIs provided by the US Patent and Trademark Office.
 
-Thanks to the USPTO data team for providing these excellent services to the community.
+The US Patent and Trademark office encourages innovators and entrepreneurs worldwide to publish their inventions
+for worldwide use and adoption. They have opened their APIs to third party developers inside and outside of
+government so that they can directly benefit from this data, by making and using their own apps.
 
+For terms of use of their APIs, please visit the respective pages at `USPTO general terms`_ and `PatentsView API terms`_.
+In general, the published material is in the public domain and may be freely distributed and copied, but it is requested
+that in any subsequent use the United States Patent and Trademark Office (USPTO) be given appropriate acknowledgement
+(e.g., “Source: United States Patent and Trademark Office, www.uspto.gov”).
 
 .. _USPTO Open Data Initiative: https://www.uspto.gov/learning-and-resources/open-data-and-mobility
 .. _USPTO Open Data Portal: https://developer.uspto.gov/
@@ -52,6 +60,8 @@ Thanks to the USPTO data team for providing these excellent services to the comm
 .. _Bulk search and download: https://developer.uspto.gov/api-catalog/bulk-search-and-download
 .. _PAIR Bulk Data: https://developer.uspto.gov/api-catalog/pair-bulk-data
 
+.. _USPTO general terms: https://www.uspto.gov/terms-use-uspto-websites#copyright
+.. _PatentsView API terms: http://www.patentsview.org/api/faqs.html#what-api
 
 
 Getting started
@@ -73,4 +83,17 @@ Spend some time taking a look around, locate a bug, design issue or
 spelling mistake and then send us a pull request or create an issue.
 
 Thanks in advance for your efforts, we really appreciate any help or feedback.
+
+Disclaimer
+----------
+The project and its authors are not affiliated with the USPTO in any way.
+It is a sole project from the community for making data more accessible in the spirit of open data.
+
+
+Credits
+=======
+Thanks to the USPTO data team and all people working behind the scenes
+for providing these excellent services to the community.
+
+You know who you are.
 
