@@ -4,8 +4,10 @@ import os
 import time
 import json
 import celery
+import celery.exceptions
 import logging
 from collections import OrderedDict
+from uspto.util.client import NoResults, UnknownDocumentType
 from uspto.util.common import get_document_path, to_list
 
 logger = logging.getLogger(__name__)
@@ -14,6 +16,12 @@ logger = logging.getLogger(__name__)
 # http://docs.celeryproject.org/en/latest/whatsnew-4.0.html#the-task-base-class-no-longer-automatically-register-tasks
 class GenericDownloadTask(celery.Task):
 
+    # Retry one hour after an error happened
+    RETRY_COUNTDOWN = 60 * 60
+
+    # How often to retry
+    RETRY_ATTEMPTS  = 5
+
     def __init__(self, *args, **kwargs):
         self.client = self.client_factory()
         self.database = kwargs.get('database', None)
@@ -21,20 +29,41 @@ class GenericDownloadTask(celery.Task):
         self.options = None
         self.result = None
 
-    # Main entry
+        # TODO: Implement "storage_strategy = MongoDB"
+        # http://docs.celeryproject.org/en/latest/userguide/tasks.html?highlight=retry#instantiation
+
+    # Wrap the celery app within the web framework context
+    # TODO: Does not work somehow
+    #def bind(self, app):
+    #    super(self.__class__, self).bind(self, celery_app)
+
+    # Main entrypoint
     def process(self, query, options=None):
         self.query = query
         self.options = options or {}
 
         logger.info('Starting download process for query=%s, options=%s', query, options)
         self.result = {'metadata': {'query': self.query, 'options': self.options, 'files': []}}
-        self.download()
-        self.finish()
+
+        # Download and store the document
+        try:
+            self.download()
+            self.store()
+
+        # If this is an unrecoverable error, we reject it so that it's redelivered
+        # to the dead letter exchange and we can manually inspect the situation.
+        # http://docs.celeryproject.org/en/latest/userguide/tasks.html#reject
+        except (NoResults, UnknownDocumentType) as ex:
+            raise celery.exceptions.Reject(reason=ex, requeue=False)
+
+        # Otherwise, let's retry again after some time
+        except Exception as ex:
+            raise self.retry(exc=ex, countdown=self.RETRY_COUNTDOWN, max_retries=self.RETRY_ATTEMPTS)
+
         return self.result
 
-    # Wrap the celery app within the Flask context
-    #def bind(self, app):
-    #    super(self.__class__, self).bind(self, celery_app)
+    # TODO: Implement "after_return" and "on_retry"
+    # # http://docs.celeryproject.org/en/latest/userguide/tasks.html#handlers
 
     def on_success(self, retval, task_id, *args, **kwargs):
         logger.info('DownloadTask succeeded')
@@ -50,7 +79,7 @@ class GenericDownloadTask(celery.Task):
         self.result.update(result)
 
 
-    def finish(self):
+    def store(self):
         self.update_state(state='PROGRESS', meta={'stage': 'finishing'})
         if self.options.get('save'):
             logger.info('Storing with options: %s', self.options)
@@ -135,6 +164,7 @@ class AsynchronousDownloader:
 
         except Exception as ex:
             logger.error('Download failed with exception: "%s: %s"', ex.__class__.__name__, ex)
+            raise
 
     def poll_group(self):
         results = OrderedDict()

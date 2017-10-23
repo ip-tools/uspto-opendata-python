@@ -7,6 +7,7 @@ development
 - When saving documents, optionally use the application identifier as filename
 - Make "--type" argument optional by guessing document type from number
 - Improve command line option juggling and documentation
+- Properly retry failing tasks with Celery
 
 2017-10-22 0.4.0
 ================

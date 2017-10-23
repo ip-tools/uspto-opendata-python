@@ -157,10 +157,10 @@ class UsptoGenericBulkDataClient:
         elif query['type'] == 'patent':
             response = self.query_patent(query['number'])
         else:
-            raise KeyError('Unknown document type for {}'.format(query))
+            raise UnknownDocumentType('Unknown document type for {}'.format(query))
 
         if not response['queryResults']['searchResponse']['response']['numFound'] >= 1:
-            raise KeyError('No results when searching for {}.'.format(query))
+            raise NoResults('No results when searching for {}.'.format(query))
 
         query_id = response['queryId']
 
@@ -195,6 +195,12 @@ class UsptoGenericBulkDataClient:
             result['json'] = payload_json
 
         return result
+
+class NoResults(Exception):
+    pass
+
+class UnknownDocumentType(Exception):
+    pass
 
 def download_and_print(client, **query):
 
