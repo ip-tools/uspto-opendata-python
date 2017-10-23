@@ -12,6 +12,7 @@ development
 - Fix Celery task reject behavior
 - Don't use number from "--numberfile" when prefixed with "#"
 - Improve exception handling and error response for bulk acquisition mode
+- Improve Celery bootstrapping again
 
 2017-10-22 0.4.0
 ================

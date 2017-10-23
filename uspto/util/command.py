@@ -7,7 +7,6 @@ import logging
 from docopt import docopt, DocoptExit
 from uspto.util.common import get_document_path, read_list, normalize_options, read_numbersfile
 from uspto.util.numbers import guess_type_from_number, format_number_for_source
-import uspto.celery                     # Must import here to enable communication with Celery
 
 logger = logging.getLogger(__name__)
 

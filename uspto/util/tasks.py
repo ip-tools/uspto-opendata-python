@@ -3,12 +3,14 @@
 import os
 import time
 import json
+import logging
 import celery
 import celery.exceptions
-import logging
 from collections import OrderedDict
 from uspto.util.client import NoResults, UnknownDocumentType
 from uspto.util.common import get_document_path, to_list
+# Must import here to enable communication with Celery
+import uspto.celery.app
 
 logger = logging.getLogger(__name__)
 
