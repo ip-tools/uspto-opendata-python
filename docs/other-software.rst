@@ -9,6 +9,10 @@ API access
 
 Python
 ======
+- | PatentsView-APIWrapper
+  | PV API wrapper that can take a list of values (e.g. patent numbers) and retrieve multiple data points to convert into CSV files and merge.
+  | https://github.com/CSSIP-AIR/PatentsView-APIWrapper
+
 - | Python client library for the USPTO's pair bulk data system
   | https://github.com/parkerhancock/uspto_pair_bulk_data
 
@@ -19,6 +23,9 @@ Javascript
 
 - | A mobile application for viewing patent data.
   | https://github.com/USPTO/PatentsViewApp
+
+- | PatentsView Query
+  | https://github.com/CSSIP-AIR/PatentsView-Query
 
 Ruby
 ====
@@ -57,10 +64,26 @@ Python
 - | Utilties which support the proccessing of XML based USPTO trademark bulk download files
   | https://github.com/USPTO/TrademarkPublicData
 
+- | Running a local instance of PatentsView?
+  | https://github.com/CSSIP-AIR/PatentsView-DB
+
+- | UPET-USPTO-Patent-Exploring-Tool
+  | https://github.com/liuqiyuan/UPET-USPTO-Patent-Exploring-Tool
+  | https://github.com/patdek/upet
 
 ********
 Scrapers
 ********
+
+Python
+======
+- | Python module to obtain trademark status information from USPTO's TSDR system
+  | https://github.com/codingatty/Plumage-py
+
+C#
+==
+- | .NET module to obtain trademark status information from USPTO's TSDR system
+  | https://github.com/codingatty/Plumage-dotnet
 
 Javascript
 ==========

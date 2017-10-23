@@ -47,10 +47,10 @@ The US Patent and Trademark office encourages innovators and entrepreneurs world
 for worldwide use and adoption. They have opened their APIs to third party developers inside and outside of
 government so that they can directly benefit from this data, by making and using their own apps.
 
-For terms of use of their APIs, please visit the respective pages at `USPTO general terms`_ and `PatentsView API terms`_.
-In general, the published material is in the public domain and may be freely distributed and copied, but it is requested
-that in any subsequent use the United States Patent and Trademark Office (USPTO) be given appropriate acknowledgement
-(e.g., “Source: United States Patent and Trademark Office, www.uspto.gov”).
+For terms of use regarding their APIs and data, please visit the respective pages at `USPTO general terms`_ and
+`PatentsView API terms`_. In general, the published material is in the public domain and may be freely distributed and
+copied, but it is requested that in any subsequent use the United States Patent and Trademark Office (USPTO) be given
+appropriate acknowledgement (e.g., “Source: United States Patent and Trademark Office, www.uspto.gov”).
 
 .. _USPTO Open Data Initiative: https://www.uspto.gov/learning-and-resources/open-data-and-mobility
 .. _USPTO Open Data Portal: https://developer.uspto.gov/

@@ -42,4 +42,6 @@ Celery
 USPTO
 *****
 - [o] No patentTermAdjustmentData for application "15431686" @ PBD
-- [o] Implement API wrappers for IBD, BDSS, PTAB, Assignment and PatentsView.
+- [o] Anomaly regarding number formats. PBD:2017/0293197 vs. PEDS:US2017293197A1
+- [o] When requesting packages with more than one file inside zip, zip file is broken
+- [o] Implement API wrappers for IBD, BDSS, PTAB, Assignment and PatentsView
