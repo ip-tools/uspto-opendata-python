@@ -7,7 +7,7 @@ import zipfile
 import requests
 from io import BytesIO
 from bs4 import BeautifulSoup
-from uspto.util.common import to_list
+from uspto.util.common import to_list, SmartException
 from uspto.util.numbers import guess_type_from_number
 
 logger = logging.getLogger(__name__)
@@ -157,10 +157,10 @@ class UsptoGenericBulkDataClient:
         elif query['type'] == 'patent':
             response = self.query_patent(query['number'])
         else:
-            raise UnknownDocumentType('Unknown document type for {}'.format(query))
+            raise UnknownDocumentType('Unknown document type for {}'.format(query), query=query)
 
         if not response['queryResults']['searchResponse']['response']['numFound'] >= 1:
-            raise NoResults('No results when searching for {}.'.format(query))
+            raise NoResults('No results when searching for {}.'.format(query), query=query)
 
         query_id = response['queryId']
 
@@ -196,10 +196,10 @@ class UsptoGenericBulkDataClient:
 
         return result
 
-class NoResults(Exception):
+class NoResults(SmartException):
     pass
 
-class UnknownDocumentType(Exception):
+class UnknownDocumentType(SmartException):
     pass
 
 def download_and_print(client, **query):

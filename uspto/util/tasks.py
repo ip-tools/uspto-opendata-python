@@ -176,6 +176,7 @@ class AsynchronousDownloader:
 
     def poll_group(self):
         results = OrderedDict()
+        errors = []
         while self.task.results:
 
             for subtask in self.task.results:
@@ -196,6 +197,12 @@ class AsynchronousDownloader:
 
                     except Exception as ex:
                         logger.error('Download failed with exception: "%s: %s"', ex.__class__.__name__, ex)
+                        error = {
+                            'message': '{}: {}'.format(ex.__class__.__name__, ex)
+                        }
+                        if hasattr(ex, 'more_info'):
+                            error.update(ex.more_info)
+                        errors.append(error)
 
                     self.task.results.remove(subtask)
 
@@ -204,4 +211,7 @@ class AsynchronousDownloader:
 
             time.sleep(1)
 
-        return results
+        response = OrderedDict()
+        response['results'] = results
+        response['errors']  = errors
+        return response

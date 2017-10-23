@@ -50,3 +50,13 @@ def read_numbersfile(filename):
     numbers = map(str.strip, numbers)
     numbers = filter(lambda number: not number.startswith('#'), numbers)
     return numbers
+
+class SmartException(Exception):
+
+    def __init__(self, message, **kwargs):
+
+        # Call the base class constructor with the parameters it needs
+        super(SmartException, self).__init__(message)
+
+        # Stuff more things into the exception object
+        self.more_info = kwargs
