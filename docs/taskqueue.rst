@@ -40,6 +40,24 @@ Run examples::
     python uspto/pbd/download.py
 
 
+Operation
+=========
+Some quick notes about ``celery`` command line invocations.
+::
+
+    celery report --app uspto
+    celery status --app uspto
+
+    celery inspect conf --app uspto
+    celery inspect report --app uspto
+    celery inspect registered --app uspto
+
+    celery inspect stats --app uspto
+    celery inspect scheduled --app uspto
+
+    celery result cbcb5866-c33a-4bb9-b9f3-0b93b87e0673 --app uspto
+
+
 .. _Celery: https://celery.readthedocs.io/
 .. _Redis: https://redis.io/
 .. _broker: https://celery.readthedocs.io/en/latest/getting-started/brokers/

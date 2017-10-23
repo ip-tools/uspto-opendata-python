@@ -8,6 +8,7 @@
 USPTO Open Data API client
 ##########################
 
+
 About
 =====
 ``uspto-opendata-python`` is a client library for accessing the USPTO Open Data APIs. It is written in Python.
@@ -40,6 +41,9 @@ described by the 2013 Executive Order 13642 to make open and machine-readable da
 The API was conceived as part of the `USPTO Open Data Initiative`_, please also visit the `USPTO Open Data Portal`_
 and its `API catalog`_ for other new APIs provided by the US Patent and Trademark Office.
 
+Thanks to the USPTO data team for providing these excellent services to the community.
+
+
 .. _USPTO Open Data Initiative: https://www.uspto.gov/learning-and-resources/open-data-and-mobility
 .. _USPTO Open Data Portal: https://developer.uspto.gov/
 .. _API catalog: https://developer.uspto.gov/api-catalog
@@ -69,9 +73,4 @@ Spend some time taking a look around, locate a bug, design issue or
 spelling mistake and then send us a pull request or create an issue.
 
 Thanks in advance for your efforts, we really appreciate any help or feedback.
-
-
-Todo
-====
-Implement API wrappers for IBD, BDSS, PTAB, Assignment and PatentsView.
 
