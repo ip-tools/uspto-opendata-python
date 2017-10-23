@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 class UsptoPatentExaminationDataSystemClient(UsptoGenericBulkDataClient):
     """
-    Python client for accessing the USPTO Patent Examination Data System API (https://ped.uspto.gov/).
+    Python client for accessing the USPTO Patent Examination Data System API (https://ped.uspto.gov/peds/).
     See also: https://ped.uspto.gov/peds/#/apiDocumentation
     """
     DATASOURCE_NAME      = 'peds'

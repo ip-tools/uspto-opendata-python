@@ -27,7 +27,7 @@ The transaction history includes the transaction date, transaction code and tran
 The query syntax follows the standard Apache Solr search syntax, and the json documents returned also follow the Solr response formats.
 
 .. _PAIR Bulk Data (PBD): https://pairbulkdata.uspto.gov/
-.. _Patent Examination Data System (PEDS): https://ped.uspto.gov/
+.. _Patent Examination Data System (PEDS): https://ped.uspto.gov/peds/
 
 
 Background

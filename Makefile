@@ -16,4 +16,4 @@ redis-start: mkvar
 
 celery-start: mkvar
 	@# http://docs.celeryproject.org/en/latest/userguide/periodic-tasks.html#starting-the-scheduler
-	celery worker --app uspto --beat --schedule-filename var/lib/celerybeat-schedule --loglevel=info
+	celery worker --app uspto.celery.tasks --beat --schedule-filename var/lib/celerybeat-schedule --loglevel=info

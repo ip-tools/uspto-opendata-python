@@ -7,7 +7,7 @@ from uspto.util.command import run_command
 from uspto.util.common import boot_logging
 from uspto.version import __VERSION__
 """
-Python command line client for accessing the USPTO Patent Examination Data System API (https://ped.uspto.gov/).
+Python command line client for accessing the USPTO Patent Examination Data System API (https://ped.uspto.gov/peds/).
 See also: https://ped.uspto.gov/peds/#/apiDocumentation
 """
 
