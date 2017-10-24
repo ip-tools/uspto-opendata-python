@@ -22,7 +22,7 @@ test_requires = [
 ]
 
 setup(name='uspto-opendata-python',
-      version='0.4.0',
+      version='0.5.0',
       description='uspto-opendata-python is a client library for accessing the USPTO Open Data APIs',
       long_description=README,
       license="MIT",
@@ -65,7 +65,7 @@ setup(name='uspto-opendata-python',
           'release': [
               'bumpversion==0.5.3',
               'flit==0.11.4',
-              'keyring==10.4.0',
+              'keyring==10.5.0',
           ],
           'documentation': [
               'Sphinx==1.6.4',
