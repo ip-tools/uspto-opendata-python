@@ -4,8 +4,12 @@ USPTO Open Data API client CHANGES
 
 development
 ===========
+
+2017-10-24 0.5.6
+================
 - Fix search command
 - Update documentation
+- Improve .bumpversion.cfg
 
 2017-10-24 0.5.5
 ================
