@@ -1,7 +1,10 @@
-.. image:: https://img.shields.io/github/tag/ip-tools/uspto-opendata-python.svg
-    :target: https://github.com/ip-tools/uspto-opendata-python
-
 .. image:: https://img.shields.io/badge/Python-2.7,%203.6-green.svg
+    :target: https://pypi.org/project/uspto-opendata-python/
+
+.. image:: https://img.shields.io/pypi/v/uspto-opendata-python.svg
+    :target: https://pypi.org/project/uspto-opendata-python/
+
+.. image:: https://img.shields.io/github/tag/ip-tools/uspto-opendata-python.svg
     :target: https://github.com/ip-tools/uspto-opendata-python
 
 ##########################

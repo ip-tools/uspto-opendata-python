@@ -64,7 +64,7 @@ setup(name='uspto-opendata-python',
       extras_require={
           'release': [
               'bumpversion==0.5.3',
-              'flit==0.11.4',
+              'twine==1.9.1',
               'keyring==10.5.2',
           ],
           'documentation': [

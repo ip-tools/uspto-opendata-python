@@ -12,11 +12,11 @@ Core
 - [x] Provide "type=auto" parameter for auto-guessing type
 - [x] Unify documentation between PBD and PEDS
 - [x] Retrieve more advanced search results than numbers only
+- [x] Release on PyPI using twine: https://pypi.python.org/pypi/twine
 - [o] When using "--background" option, check for Celery availability (ping?)
 - [o] Send PR to "clint" re. empty_char/filled_char
 - [o] Send PR to "maya" re. "TypeError: 'encoding' is an invalid keyword argument for this function" on Python2
 - [o] Implement uspto.util.format_number_for_source
-- [o] Release on PyPI using https://flit.readthedocs.io/
 - [o] Add tests
 
 

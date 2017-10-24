@@ -5,6 +5,14 @@ USPTO Open Data API client CHANGES
 development
 ===========
 
+2017-10-24 0.5.3
+================
+- Release on PyPI using "twine"
+
+2017-10-24 0.5.2
+================
+- Release on PyPI using "flit"
+
 2017-10-24 0.5.1
 ================
 - Update documentation

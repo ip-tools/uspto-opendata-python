@@ -20,7 +20,7 @@ Build package
 =============
 ::
 
-    # flit build
+    # Build sdist package
     python setup.py sdist
 
 
@@ -29,9 +29,9 @@ Upload to PyPI
 ::
 
     # Test upload
-    flit --repository testpypi publish --format sdist
+    twine upload --repository testpypi dist/*
 
     # Real upload
-    flit --repository pypi publish --format sdist
+    twine upload dist/uspto-opendata-python-0.5.2.tar.gz
 
-See also: https://flit.readthedocs.io/
+See also: https://pypi.python.org/pypi/twine
