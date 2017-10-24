@@ -5,6 +5,10 @@ USPTO Open Data API client CHANGES
 development
 ===========
 
+2017-10-24 0.5.1
+================
+- Update documentation
+
 2017-10-24 0.5.0
 ================
 - When saving documents, optionally use the application identifier as filename

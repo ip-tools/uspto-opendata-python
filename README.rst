@@ -66,6 +66,10 @@ appropriate acknowledgement (e.g., “Source: United States Patent and Trademark
 
 Getting started
 ===============
+Install::
+
+    pip install uspto-opendata-python
+
 Please refer to the `getting started`_ page about how to install and use this software.
 
 .. _getting started: docs/getting-started.rst

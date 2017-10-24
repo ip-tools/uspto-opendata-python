@@ -28,6 +28,10 @@ Upload to PyPI
 ==============
 ::
 
-    flit --repository testpypi publish
+    # Test upload
+    flit --repository testpypi publish --format sdist
+
+    # Real upload
+    flit --repository pypi publish --format sdist
 
 See also: https://flit.readthedocs.io/

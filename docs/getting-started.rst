@@ -20,7 +20,7 @@ Setup in development mode::
     source .venv27/bin/activate
 
     # Install Python package
-    python setup.py develop
+    pip install uspto-opendata-python
 
 
 Usage
