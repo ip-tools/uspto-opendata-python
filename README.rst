@@ -100,7 +100,5 @@ It is a sole project from the community for making data more accessible in the s
 Credits
 =======
 Thanks to the USPTO data team and all people working behind the scenes
-for providing these excellent services to the community.
-
-You know who you are.
+for providing these excellent services to the community. You know who you are.
 

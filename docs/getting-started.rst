@@ -14,10 +14,13 @@ Create Python virtualenv::
     # ... or Python 3.6
     virtualenv --no-site-packages --python python3.6 .venv36
 
-Setup in development mode::
+Install::
 
     # Activate virtualenv
     source .venv27/bin/activate
+
+    # or
+    source .venv36/bin/activate
 
     # Install Python package
     pip install uspto-opendata-python

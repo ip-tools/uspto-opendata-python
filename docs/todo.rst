@@ -13,6 +13,9 @@ Core
 - [x] Unify documentation between PBD and PEDS
 - [x] Retrieve more advanced search results than numbers only
 - [x] Release on PyPI using twine: https://pypi.python.org/pypi/twine
+- [o] Document the "search" API
+- [o] Implement paging for search mode
+- [o] Implement PedsSearchDocument, canonization and comparison
 - [o] When using "--background" option, check for Celery availability (ping?)
 - [o] Send PR to "clint" re. empty_char/filled_char
 - [o] Send PR to "maya" re. "TypeError: 'encoding' is an invalid keyword argument for this function" on Python2
