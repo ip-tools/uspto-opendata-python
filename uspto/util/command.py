@@ -90,7 +90,7 @@ def run_command(client, options):
     if options.get('search'):
         expression = options.get('<expression>') or '*:*'
         filter = options.get('--filter')
-        result = client.search(expression, filter=filter, start=20)
+        result = client.search(expression, filter=filter)
 
         if options.get('--download'):
             query_id = result['metadata']['queryId']

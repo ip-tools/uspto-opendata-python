@@ -4,6 +4,7 @@ USPTO Open Data API client CHANGES
 
 development
 ===========
+- Fix search command
 
 2017-10-24 0.5.5
 ================

@@ -57,7 +57,7 @@ class UsptoGenericBulkDataClient:
 
         # Submit the query to the Solr search service
         response = self.session.post(self.QUERY_URL, json=solr_query)
-        #print response.text
+        #print(response.text)
 
         # Check response and scrape appropriate error message from HTML on failure
         if response.status_code != 200:
