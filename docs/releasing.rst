@@ -20,7 +20,8 @@ Build package
 =============
 ::
 
-    flit build
+    # flit build
+    python setup.py sdist
 
 
 Upload to PyPI
