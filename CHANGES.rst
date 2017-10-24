@@ -5,6 +5,10 @@ USPTO Open Data API client CHANGES
 development
 ===========
 
+2017-10-24 0.5.5
+================
+- Fix bumpversion woes
+
 2017-10-24 0.5.4
 ================
 - Fix "clint" dependency

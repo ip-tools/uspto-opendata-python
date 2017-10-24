@@ -63,9 +63,9 @@ setup(name='uspto-opendata-python',
       tests_require=test_requires,
       extras_require={
           'release': [
-              'bumpversion==0.5.4',
+              'bumpversion==0.5.3',
               'twine==1.9.1',
-              'keyring==10.5.4',
+              'keyring==10.4.0',
           ],
           'documentation': [
               'Sphinx==1.6.4',
