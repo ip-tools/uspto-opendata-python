@@ -14,7 +14,7 @@ requires = [
     'pathvalidate==0.16.2',
     'lxml==4.1.0',
     'jsonpointer==1.12',
-    'clint==0.5.3',
+    'clint==0.5.1',
     'awesome-slugify==1.6.5',
 ]
 
@@ -72,6 +72,9 @@ setup(name='uspto-opendata-python',
               'sphinx_rtd_theme==0.2.5b1',
           ],
       },
+      dependency_links=[
+        'https://github.com/kennethreitz/clint/tarball/9d3693d6#egg=clint-0.5.1',
+      ],
 
       entry_points={
         'console_scripts': [

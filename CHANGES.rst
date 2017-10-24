@@ -5,6 +5,7 @@ USPTO Open Data API client CHANGES
 development
 ===========
 
+- Fix "clint" dependency
 2017-10-24 0.5.3
 ================
 - Release on PyPI using "twine"
