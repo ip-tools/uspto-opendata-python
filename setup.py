@@ -64,6 +64,7 @@ setup(name='uspto-opendata-python',
       extras_require={
           'release': [
               'bumpversion==0.5.3',
+              'flit==0.11.4',
           ],
           'documentation': [
               'Sphinx==1.6.4',

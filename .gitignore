@@ -4,3 +4,5 @@
 *.pyc
 /var
 /tmp
+/dist
+/docs/notes.rst
