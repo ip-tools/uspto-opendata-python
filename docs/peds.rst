@@ -62,6 +62,10 @@ For running the background scheduler, start redis and celery::
     redis-server
     celery worker --app uspto.tasks --loglevel=info
 
+See also: `taskqueue documentation`_.
+
+.. _taskqueue documentation: taskqueue.rst
+
 Simple usage::
 
     from uspto.peds.tasks import UsptoPatentExaminationDataSystemDownloader
