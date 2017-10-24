@@ -1,11 +1,17 @@
-push:
-	git push && git push --tags
-
 bumpversion:
 	bumpversion $(bump)
 
+push:
+	git push && git push --tags
+
+sdist:
+	python setup.py sdist
+
+upload:
+	twine upload dist/uspto-opendata-python-*.tar.gz
+
 # make release bump=minor  (major,minor,patch)
-release: bumpversion push
+release: bumpversion push sdist upload
 
 
 mkvar:
