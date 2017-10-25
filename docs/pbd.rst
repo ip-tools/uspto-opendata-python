@@ -172,7 +172,7 @@ Command line
       uspto-pbd save <document-number> --format=xml [--type=publication] [--pretty] [--directory=/var/spool/uspto] [--use-application-id] [--overwrite] [--background] [--wait] [--debug]
       uspto-pbd bulk get  --numberfile=numbers.txt --format=xml,json [--pretty] [--use-application-id] [--wait] [--debug]
       uspto-pbd bulk save --numberfile=numbers.txt --format=xml,json [--pretty] --directory=/var/spool/uspto [--use-application-id] [--overwrite] [--wait] [--debug]
-      uspto-pbd search [<expression>] [--filter=filter] [--download] [--format=xml,json] [--directory=/var/spool/uspto] [--debug]
+      uspto-pbd search [<expression>] [--filter=filter] [--start=0] [--rows=20] [--download] [--format=xml,json] [--directory=/var/spool/uspto] [--debug]
       uspto-pbd info
       uspto-pbd --version
       uspto-pbd (-h | --help)
@@ -198,6 +198,10 @@ Command line
                                 Example:
 
                                 - appFilingDate:[2000-01-01T00:00:00Z TO 2005-12-31T23:59:59Z]
+
+      --start=<start>           Start record. Default: 0
+      --rows=<rows>             Number of records returned. Default: 20 (which is also the limit).
+
 
     Output options:
       --pretty                  Pretty-print output data. This currently applies to "--format=json" only.

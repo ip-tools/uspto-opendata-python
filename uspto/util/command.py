@@ -18,7 +18,7 @@ def run_command(client, options):
       {program} save <document-number> --format=xml [--type=publication] [--pretty] [--directory=/var/spool/uspto] [--use-application-id] [--overwrite] [--background] [--wait] [--debug]
       {program} bulk get  --numberfile=numbers.txt --format=xml,json [--pretty] [--use-application-id] [--wait] [--debug]
       {program} bulk save --numberfile=numbers.txt --format=xml,json [--pretty] --directory=/var/spool/uspto [--use-application-id] [--overwrite] [--wait] [--debug]
-      {program} search [<expression>] [--filter=filter] [--download] [--format=xml,json] [--directory=/var/spool/uspto] [--debug]
+      {program} search [<expression>] [--filter=filter] [--start=0] [--rows=20] [--download] [--format=xml,json] [--directory=/var/spool/uspto] [--debug]
       {program} info
       {program} --version
       {program} (-h | --help)
@@ -44,6 +44,10 @@ def run_command(client, options):
                                 Example:
 
                                 - appFilingDate:[2000-01-01T00:00:00Z TO 2005-12-31T23:59:59Z]
+
+      --start=<start>           Start record. Default: 0
+      --rows=<rows>             Number of records returned. Default: 20 (which is also the limit).
+
 
     Output options:
       --pretty                  Pretty-print output data. This currently applies to "--format=json" only.
@@ -87,10 +91,11 @@ def run_command(client, options):
 
     # Debugging
     #print('options: {}'.format(options))
+
     if options.get('search'):
         expression = options.get('<expression>') or '*:*'
         filter = options.get('--filter')
-        result = client.search(expression, filter=filter)
+        result = client.search(expression, filter=filter, start=options.get('--start'), rows=options.get('--rows'))
 
         if options.get('--download'):
             query_id = result['metadata']['queryId']
