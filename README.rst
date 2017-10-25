@@ -12,9 +12,10 @@ USPTO Open Data API client
 ##########################
 
 
+*****
 About
-=====
-``uspto-opendata-python`` is a client library for accessing the USPTO Open Data APIs. It is written in Python.
+*****
+``uspto-opendata-python`` is a client library for accessing the USPTO Open Data APIs, written in Python.
 
 Currently, it implements API wrappers for the
 
@@ -27,14 +28,66 @@ There is also some data dating back to 1935.
 The PEDS system provides additional information concerning the transaction activity that has occurred for each patent.
 The transaction history includes the transaction date, transaction code and transaction description for each transaction activity.
 
-The query syntax follows the standard Apache Solr search syntax, and the json documents returned also follow the Solr response formats.
-
 .. _PAIR Bulk Data (PBD): https://pairbulkdata.uspto.gov/
 .. _Patent Examination Data System (PEDS): https://ped.uspto.gov/peds/
 
 
-Background
+***************
+Getting started
+***************
+
+Install
+=======
+If you know your way around Python, installing this software is really easy::
+
+    pip install uspto-opendata-python
+
+Please refer to the `virtualenv`_ page about further guidelines how to install and use this software.
+
+.. _virtualenv: https://github.com/ip-tools/uspto-opendata-python/blob/master/docs/virtualenv.rst
+
+
+Usage
+=====
+Please refer to the respective documentation about which API you want to access:
+
+- PAIR Bulk Data (PBD) system: `PBD usage`_
+- Patent Examination Data System (PEDS): `PEDS usage`_
+
+.. _PBD usage: https://github.com/ip-tools/uspto-opendata-python/blob/master/docs/pbd.rst
+.. _PEDS usage: https://github.com/ip-tools/uspto-opendata-python/blob/master/docs/peds.rst
+
+
+*******************
+Project information
+*******************
+``uspto-opendata-python`` is released under the MIT license,
+the code lives on `GitHub <https://github.com/ip-tools/uspto-opendata-python>`_.
+
+The software has been tested on Python 2.7 and Python 3.6.
+
+If you'd like to contribute you're most welcome!
+Spend some time taking a look around, locate a bug, design issue or
+spelling mistake and then send us a pull request or create an issue.
+
+Thanks in advance for your efforts, we really appreciate any help or feedback.
+
+Disclaimer
 ==========
+The project and its authors are not affiliated with the USPTO in any way.
+It is a sole project from the community for making data more accessible in the spirit of open data.
+
+
+*******
+Credits
+*******
+Thanks to the USPTO data team and all people working behind the scenes
+for providing these excellent services to the community. You know who you are.
+
+
+**********
+Background
+**********
 The Patent Application Information Retrieval (PAIR) APIs let customers retrieve and download
 multiple records of USPTO patent application or patent filing status at no cost.
 
@@ -65,40 +118,4 @@ appropriate acknowledgement (e.g., “Source: United States Patent and Trademark
 
 .. _USPTO general terms: https://www.uspto.gov/terms-use-uspto-websites#copyright
 .. _PatentsView API terms: http://www.patentsview.org/api/faqs.html#what-api
-
-
-Getting started
-===============
-Install::
-
-    pip install uspto-opendata-python
-
-Please refer to the `getting started`_ page about how to install and use this software.
-
-.. _getting started: docs/getting-started.rst
-
-
-Project information
-===================
-``uspto-opendata-python`` is released under the MIT license,
-the code lives on `GitHub <https://github.com/ip-tools/uspto-opendata-python>`_.
-
-The software has been tested on Python 2.7 and Python 3.6.
-
-If you'd like to contribute you're most welcome!
-Spend some time taking a look around, locate a bug, design issue or
-spelling mistake and then send us a pull request or create an issue.
-
-Thanks in advance for your efforts, we really appreciate any help or feedback.
-
-Disclaimer
-----------
-The project and its authors are not affiliated with the USPTO in any way.
-It is a sole project from the community for making data more accessible in the spirit of open data.
-
-
-Credits
-=======
-Thanks to the USPTO data team and all people working behind the scenes
-for providing these excellent services to the community. You know who you are.
 

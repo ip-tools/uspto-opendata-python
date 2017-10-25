@@ -9,7 +9,9 @@ About
 The USPTO PAIR Bulk Data (PBD) system contains bibliographic, published document and patent term extension data
 in Public PAIR from 1981 to present. There is also some data dating back to 1935.
 
-The API documentation can be found at https://pairbulkdata.uspto.gov/#/api-documentation.
+Please also refer to the `API documentation`_ of this service at USPTO.
+
+.. _API documentation: https://pairbulkdata.uspto.gov/#/api-documentation
 
 
 ************
@@ -25,9 +27,39 @@ Both can be used for searching and for downloading packages of bundled artefacts
 Synopsis
 ********
 
-API
-===
-The API has two different modes, synchronous and asynchronous.
+Search interface
+================
+Simple usage::
+
+    from uspto.pbd.client import UsptoPairBulkDataClient
+    client = UsptoPairBulkDataClient()
+
+    expression = 'firstNamedApplicant:(nasa)'
+    result     = client.search(expression)
+
+Advanced usage::
+
+    expression = 'patentTitle:(network AND security) AND appStatus_txt:(patented)'
+    filter     = 'appFilingDate:[2000-01-01T00:00:00Z TO 2005-12-31T23:59:59Z]'
+    result     = client.search(expression, filter=filter, sort='applId asc', start=0, rows=20)
+
+The query syntax follows the standard `Apache Solr`_ search syntax,
+the JSON documents returned also follow the Solr response formats.
+
+Please note the maximum number of records available per request is limited to 20,
+so you have to use the argument options ``start`` and ``rows`` to iterate
+through result pages.
+
+.. _Apache Solr: https://lucene.apache.org/solr/
+
+
+Download interface
+==================
+The download interface uses the search interface and adds automation for
+requesting and downloading package bundles for search results as outlined
+in the »API Tutorial« section of the API documentation.
+It has two different modes, synchronous and asynchronous.
+
 
 Synchronous mode
 ----------------
@@ -55,14 +87,21 @@ Advanced usage::
 
 Asynchronous mode
 -----------------
-For running the background scheduler, start redis and celery::
+The software can also operate asynchronously by using Celery_
+as a task queue for scheduling downloads in the background.
+Please refer to the `taskqueue documentation`_.
+
+To make the background task scheduler operate it in a simple manner, just start Redis_ and Celery_ like that::
 
     redis-server
     celery worker --app uspto.tasks --loglevel=info
 
 See also: `taskqueue documentation`_.
 
+.. _Redis: https://redis.io/
+.. _Celery: https://celery.readthedocs.io/
 .. _taskqueue documentation: taskqueue.rst
+
 
 Simple usage::
 
@@ -227,7 +266,7 @@ Command line
     Search examples:
 
         # Search for documents matching "applicant=nasa" and display polished JSON response
-        uspto-pbd search 'firstNamedApplicant:(nasa)' --filter='appFilingDate:[2000-01-01T00:00:00Z TO 2017-12-31T23:59:59Z]'
+        uspto-pbd search 'firstNamedApplicant:(nasa)'
 
         # Search for documents matching "applicant=grohe" filed between 2010 and 2017
         uspto-pbd search 'firstNamedApplicant:(*grohe*)' --filter='appFilingDate:[2010-01-01T00:00:00Z TO 2017-12-31T23:59:59Z]'

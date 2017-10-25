@@ -16,6 +16,18 @@ Python
 - | Python client library for the USPTO's pair bulk data system
   | https://github.com/parkerhancock/uspto_pair_bulk_data
 
+- | Python client library for the USPTO's assignment database
+  | https://github.com/parkerhancock/uspto_assignments
+
+- | Download granted data from USPTO with Python (PatentsView)
+  | https://github.com/cnavarreteliz/PyUSPTO
+
+R
+=
+- | An R client to the PatentsView API
+  | https://ropensci.github.io/patentsview/
+  | https://github.com/ropensci/patentsview
+
 Javascript
 ==========
 - | A mobile application (IOS, Android compatible) that alerts users of trademark status changes.
@@ -44,7 +56,7 @@ Windows .exe
 
 
 *************
-Data products
+Data download
 *************
 
 Java
@@ -71,6 +83,17 @@ Python
   | https://github.com/liuqiyuan/UPET-USPTO-Patent-Exploring-Tool
   | https://github.com/patdek/upet
 
+- | Utilities for fetching and parsing patents from USPTO (PATFT and Bulk data)
+  | https://github.com/clicumu/uspto-tools
+
+
+R
+=
+- | A function to download patent data from the USPTO bulk data storage system (BDSS)
+  | https://github.com/Jackliien/download.uspto.data
+
+
+
 ********
 Scrapers
 ********
@@ -79,6 +102,9 @@ Python
 ======
 - | Python module to obtain trademark status information from USPTO's TSDR system
   | https://github.com/codingatty/Plumage-py
+
+- | A small python spider to help you collect patent information from USPTO (PATFT)
+  | https://github.com/panda0881/uspto_spider
 
 C#
 ==
