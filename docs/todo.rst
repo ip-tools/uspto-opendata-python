@@ -13,7 +13,9 @@ Core
 - [x] Unify documentation between PBD and PEDS
 - [x] Retrieve more advanced search results than numbers only
 - [x] Release on PyPI using twine: https://pypi.python.org/pypi/twine
-- [o] Document the "search" API
+- [x] Document the "search" API
+- [o] How to search for date ranges?
+
 - [o] Implement paging for search mode
 - [o] Implement PedsSearchDocument, canonization and comparison
 - [o] When using "--background" option, check for Celery availability (ping?)

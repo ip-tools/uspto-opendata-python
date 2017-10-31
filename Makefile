@@ -23,3 +23,14 @@ redis-start: mkvar
 celery-start: mkvar
 	@# http://docs.celeryproject.org/en/latest/userguide/periodic-tasks.html#starting-the-scheduler
 	celery worker --app uspto.celery.tasks --beat --schedule-filename var/lib/celerybeat-schedule --loglevel=info
+
+
+docs-virtualenv:
+	$(eval venvpath := ".venv_sphinx")
+	@test -e $(venvpath)/bin/python || `command -v virtualenv` --python=`command -v python` --no-site-packages $(venvpath)
+	@$(venvpath)/bin/pip --quiet install --requirement requirements-docs.txt
+
+docs-html: docs-virtualenv
+	$(eval venvpath := ".venv_sphinx")
+	touch docs/index.rst
+	export SPHINXBUILD="`pwd`/$(venvpath)/bin/sphinx-build"; cd docs; make html

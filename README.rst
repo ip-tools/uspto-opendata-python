@@ -15,7 +15,7 @@ USPTO Open Data API client
 *****
 About
 *****
-``uspto-opendata-python`` is a client library for accessing the USPTO Open Data APIs, written in Python.
+``uspto-opendata-python`` is a client library for accessing the USPTO Open Data APIs,  It is written in Python.
 
 Currently, it implements API wrappers for the
 

@@ -5,6 +5,10 @@ USPTO Open Data API client CHANGES
 development
 ===========
 
+2017-10-31 0.7.0
+================
+- Add documentation infrastructure (Sphinx) and tooling
+
 2017-10-25 0.6.0
 ================
 - Add commandline options ``--start`` and ``--rows`` for paging through search results
