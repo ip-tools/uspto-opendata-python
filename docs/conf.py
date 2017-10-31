@@ -49,8 +49,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'uspto-opendata-python'
-copyright = u'2017, Andreas Motl'
-author = u'Andreas Motl'
+copyright = u'2017, The PatZilla authors'
+author = u'The PatZilla authors'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -145,7 +145,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'uspto-opendata-python.tex', u'uspto-opendata-python Documentation',
-     u'Andreas Motl', 'manual'),
+     u'The PatZilla authors', 'manual'),
 ]
 
 
