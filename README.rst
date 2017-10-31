@@ -54,8 +54,8 @@ Please refer to the respective documentation about which API you want to access:
 - PAIR Bulk Data (PBD) system: `PBD usage`_
 - Patent Examination Data System (PEDS): `PEDS usage`_
 
-.. _PBD usage: https://github.com/ip-tools/uspto-opendata-python/blob/master/docs/pbd.rst
-.. _PEDS usage: https://github.com/ip-tools/uspto-opendata-python/blob/master/docs/peds.rst
+.. _PBD usage: https://docs.ip-tools.org/uspto-opendata-python/pbd.html
+.. _PEDS usage: https://docs.ip-tools.org/uspto-opendata-python/peds.html
 
 
 *******************

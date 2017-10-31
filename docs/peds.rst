@@ -1,3 +1,5 @@
+.. _peds-client:
+
 ###############################################
 USPTO Patent Examination Data System API client
 ###############################################

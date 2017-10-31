@@ -31,6 +31,15 @@ The transaction history includes the transaction date, transaction code and tran
 
 .. toctree::
     :maxdepth: 1
+    :caption: Documentation
+
+    pbd
+    peds
+    taskqueue
+    virtualenv
+
+.. toctree::
+    :maxdepth: 1
     :caption: Development
 
     Releasing <releasing>
