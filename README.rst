@@ -7,6 +7,8 @@
 .. image:: https://img.shields.io/github/tag/ip-tools/uspto-opendata-python.svg
     :target: https://github.com/ip-tools/uspto-opendata-python
 
+|
+
 ##########################
 USPTO Open Data API client
 ##########################
@@ -61,8 +63,10 @@ Please refer to the respective documentation about which API you want to access:
 *******************
 Project information
 *******************
-``uspto-opendata-python`` is released under the MIT license,
-the code lives on `GitHub <https://github.com/ip-tools/uspto-opendata-python>`_.
+``uspto-opendata-python`` is released under the MIT license.
+The code lives on `GitHub <https://github.com/ip-tools/uspto-opendata-python>`_ and
+the Python package is published to `PyPI <https://pypi.org/project/uspto-opendata-python/>`_.
+You might also want to have a look at the `documentation <https://docs.ip-tools.org/uspto-opendata-python/>`_.
 
 The software has been tested on Python 2.7 and Python 3.6.
 

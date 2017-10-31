@@ -5,6 +5,10 @@ USPTO Open Data API client CHANGES
 development
 ===========
 
+2017-10-31 0.7.1
+================
+- Update documentation
+
 2017-10-31 0.7.0
 ================
 - Add documentation infrastructure (Sphinx) and tooling

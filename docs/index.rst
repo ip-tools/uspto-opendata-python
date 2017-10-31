@@ -3,10 +3,20 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-uspto-opendata-python
-=====================
+.. image:: https://img.shields.io/badge/Python-2.7,%203.6-green.svg
+    :target: https://pypi.org/project/uspto-opendata-python/
 
-uspto-opendata-python is a client library for accessing the USPTO Open Data APIs.
+.. image:: https://img.shields.io/pypi/v/uspto-opendata-python.svg
+    :target: https://pypi.org/project/uspto-opendata-python/
+
+.. image:: https://img.shields.io/github/tag/ip-tools/uspto-opendata-python.svg
+    :target: https://github.com/ip-tools/uspto-opendata-python
+
+|
+
+USPTO Open Data API client
+==========================
+``uspto-opendata-python`` is a client library for accessing the USPTO Open Data APIs,  It is written in Python.
 
 Currently, it implements API wrappers for the
 

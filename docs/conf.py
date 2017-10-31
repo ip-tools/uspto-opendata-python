@@ -48,7 +48,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'uspto-opendata-python'
+project = u'USPTO Open Data API client'
 copyright = u'2017, The PatZilla authors'
 author = u'The PatZilla authors'
 
