@@ -5,6 +5,10 @@ USPTO Open Data API client CHANGES
 development
 ===========
 
+2017-11-17 0.7.2
+================
+- Replace non ASCII-compatible quotation marks in README to address #1. Thanks, Rahul.
+
 2017-10-31 0.7.1
 ================
 - Update documentation
