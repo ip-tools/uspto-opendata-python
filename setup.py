@@ -22,7 +22,7 @@ test_requires = [
 ]
 
 setup(name='uspto-opendata-python',
-      version='0.7.1',
+      version='0.7.2',
       description='uspto-opendata-python is a client library for accessing the USPTO Open Data APIs',
       long_description=README,
       license="MIT",
@@ -50,7 +50,7 @@ setup(name='uspto-opendata-python',
         "Topic :: Utilities",
       ],
       author='Andreas Motl',
-      author_email='andreas@ip-tools.org',
+      author_email='andreas.motl@ip-tools.org',
       url='https://github.com/ip-tools/uspto-opendata-python',
       keywords='uspto pair pbd peds opendata bulk data download patent information research search',
       packages=find_packages(),
