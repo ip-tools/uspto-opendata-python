@@ -5,6 +5,10 @@ USPTO Open Data API client CHANGES
 development
 ===========
 
+2017-11-20 0.7.4
+================
+- Replace non ASCII-compatible quotation marks in CHANGES to address #1. Thanks again, Rahul.
+
 2017-11-17 0.7.3
 ================
 - Replace non ASCII-compatible quotation marks in README to address #1. Thanks, Rahul.
@@ -65,7 +69,7 @@ development
 2017-10-22 0.4.0
 ================
 - Improve Celery bootstrapping
-- Add “--poll” option to wait for results when running in “--background” mode
+- Add "--poll" option to wait for results when running in "--background" mode
 - Improve command line argument handling
 - Rename command line option "--poll" to "--wait"
 - Introduce bulk mode based on task queue: ``uspto-{pbd,peds} bulk {get,save} ...``
