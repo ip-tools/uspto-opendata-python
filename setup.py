@@ -12,7 +12,7 @@ requires = [
     'beautifulsoup4==4.6.0',
     'docopt==0.6.2',
     'pathvalidate==0.16.2',
-    'lxml==4.1.0',
+    'lxml==4.2.5',
     'jsonpointer==1.12',
     'clint==0.5.1',
     'awesome-slugify==1.6.5',

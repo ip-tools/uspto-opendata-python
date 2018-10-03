@@ -4,6 +4,7 @@ USPTO Open Data API client CHANGES
 
 development
 ===========
+- Upgrade to lxml 4.2.5 to satisfy libxml2 compilation on recent Homebrew
 
 2017-11-20 0.7.4
 ================
