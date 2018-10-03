@@ -8,7 +8,7 @@ sdist:
 	python setup.py sdist
 
 upload:
-	twine upload dist/uspto-opendata-python-*.tar.gz
+	twine upload --skip-existing dist/uspto-opendata-python-*.tar.gz
 
 # make release bump=minor  (major,minor,patch)
 release: bumpversion push sdist upload
@@ -28,7 +28,7 @@ celery-start: mkvar
 docs-virtualenv:
 	$(eval venvpath := ".venv_sphinx")
 	@test -e $(venvpath)/bin/python || `command -v virtualenv` --python=`command -v python` --no-site-packages $(venvpath)
-	@$(venvpath)/bin/pip --quiet install --requirement requirements-docs.txt
+	@$(venvpath)/bin/pip install --requirement requirements-docs.txt
 
 docs-html: docs-virtualenv
 	$(eval venvpath := ".venv_sphinx")
