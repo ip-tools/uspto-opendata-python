@@ -4,6 +4,7 @@ USPTO Open Data API client CHANGES
 
 development
 ===========
+- Improve tooling (Makefile)
 
 2018-10-03 0.8.0
 ================
