@@ -5,6 +5,8 @@ USPTO Open Data API client CHANGES
 development
 ===========
 - Upgrade to lxml 4.2.5 to satisfy libxml2 compilation on recent Homebrew
+- Improve error reporting when upstream API is defunct
+  with e.g. ``Service Unavailable: Back-end server is at capacity``. Thanks, Mohamed!
 
 2017-11-20 0.7.4
 ================

@@ -57,23 +57,34 @@ class UsptoGenericBulkDataClient:
 
         # Submit the query to the Solr search service
         response = self.session.post(self.QUERY_URL, json=solr_query)
-        #print(response.text)
+        #print(self.QUERY_URL, response.text)
 
         # Check response and scrape appropriate error message from HTML on failure
         if response.status_code != 200:
-            logger.error('Error while querying for %s\n%s', expression, response.text)
-            if response.headers['Content-Type'].startswith('text/html'):
+
+            # First error message
+            message = u'Error while querying for {}'.format(expression)
+            if response.text:
+                message += u'\n{}'.format(response.text)
+            logger.error(message)
+
+            # Compute second error message to reveal more details
+            if 'Content-Type' in response.headers and response.headers['Content-Type'].startswith('text/html'):
                 soup = BeautifulSoup(response.text, 'html.parser')
                 title = soup.find('title')
                 message = title.string.strip()
                 hr = soup.body.find('hr')
                 reason = hr.next_sibling.string.strip()
                 if reason:
-                    message += '. ' + reason
+                    message += u'. ' + reason
                 message += ' (status={})'.format(response.status_code)
+                logger.error(message)
                 raise ValueError(message)
             else:
-                raise ValueError('Search error with response of unknown Content-Type')
+                message = u'API error. Status: {}, Reason: {}, Content-Type: {}'.format(
+                    response.status_code, response.reason, response.headers.get('Content-Type'))
+                logger.error(message)
+                raise ValueError(message)
 
         return response.json()
 
