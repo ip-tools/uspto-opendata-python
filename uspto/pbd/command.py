@@ -64,6 +64,12 @@ def run():
     # Start logging subsystem
     boot_logging(options)
 
+    # 2018-10-24
+    message = 'The USPTO PBD service (PAIR Bulk Data system) has been decommissioned, ' \
+              'please use the USPTO PEDS service (Patent Examination Data System).'
+    logger.error(message)
+    raise KeyError(message)
+
     # An instance of the API client
     client = UsptoPairBulkDataClient()
 

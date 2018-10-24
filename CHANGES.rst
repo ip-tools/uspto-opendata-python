@@ -4,8 +4,13 @@ USPTO Open Data API client CHANGES
 
 development
 ===========
+
+
+2018-10-24 0.8.1
+================
 - Improve tooling (Makefile)
 - Fix regression when decoding the document identifier
+- Disable the PBD subsystem as it has been decommissioned by the USPTO. Thanks, Mohamed and Andy!
 
 2018-10-03 0.8.0
 ================
