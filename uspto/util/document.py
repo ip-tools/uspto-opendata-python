@@ -24,7 +24,7 @@ class GenericDocument:
                 if node:
                     identifier = self.sanitize_value(node[0].text)
                     if identifier:
-                        self.identifiers.setdefault(number_type, identifier.decode('utf-8'))
+                        self.identifiers.setdefault(number_type, identifier)
 
         if self.json:
             data = json.loads(self.json)

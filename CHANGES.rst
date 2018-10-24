@@ -5,6 +5,7 @@ USPTO Open Data API client CHANGES
 development
 ===========
 - Improve tooling (Makefile)
+- Fix regression when decoding the document identifier
 
 2018-10-03 0.8.0
 ================
