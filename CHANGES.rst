@@ -6,6 +6,10 @@ development
 ===========
 
 
+2018-10-24 0.8.2
+================
+- Fix regression re. proper charset decoding
+
 2018-10-24 0.8.1
 ================
 - Improve tooling (Makefile)

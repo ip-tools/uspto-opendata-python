@@ -175,7 +175,7 @@ def process_single_result(client, result, options):
     document_format = options.get('--format')
 
     # A. Choose output format from user selection
-    payload = result[document_format]
+    payload = result[document_format].decode('utf-8')
 
     # B. Compute document identifiers
     document = client.document_factory(data=result)
