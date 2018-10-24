@@ -21,8 +21,8 @@ About
 
 Currently, it implements API wrappers for the
 
-- `PAIR Bulk Data (PBD)`_ system
 - `Patent Examination Data System (PEDS)`_
+- `PAIR Bulk Data (PBD)`_ system (decommissioned, so defunct)
 
 Both systems contain bibliographic, published document and patent term extension data in Public PAIR from 1981 to present.
 There is also some data dating back to 1935.
@@ -32,6 +32,11 @@ The transaction history includes the transaction date, transaction code and tran
 
 .. _PAIR Bulk Data (PBD): https://pairbulkdata.uspto.gov/
 .. _Patent Examination Data System (PEDS): https://ped.uspto.gov/peds/
+
+.. attention::
+
+    The USPTO PBD service (PAIR Bulk Data system) has been decommissioned,
+    please use the USPTO PEDS service (Patent Examination Data System).
 
 
 ***************
