@@ -39,7 +39,7 @@ class UsptoGenericBulkDataClient:
             'facet': True,
             'fl': '*',
             'fq': filter,
-            'mm': '100%',
+            #'mm': '100%',
             'qf': 'appEarlyPubNumber applId appLocation appType appStatus_txt appConfrNumber appCustNumber '
                   'appGrpArtNumber appCls appSubCls appEntityStatus_txt patentNumber patentTitle primaryInventor '
                   'firstNamedApplicant appExamName appExamPrefrdName appAttrDockNumber appPCTNumber appIntlPubNumber '

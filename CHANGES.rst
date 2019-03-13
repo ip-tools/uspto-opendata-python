@@ -6,6 +6,10 @@ development
 ===========
 
 
+2019-03-14 0.8.3
+================
+- Fix ``uspto-peds search`` command. Thanks, Rahul!
+
 2018-10-24 0.8.2
 ================
 - Fix regression re. proper charset decoding
