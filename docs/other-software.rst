@@ -116,3 +116,47 @@ Javascript
 - | A library for retrieving USPTO patent information
   | https://github.com/hofan41/uspto
 
+
+
+********
+Incoming
+********
+- https://pypi.python.org/pypi/patent-parsing-tools
+- https://pypi.python.org/pypi/patentdata
+- https://github.com/benhoyle/patentdata
+- https://github.com/benhoyle/patentmodels
+- https://bitbucket.org/ml-patents/patent-parsing-tools
+- https://github.com/hopped/uspto-patents-parsing-tools
+- https://github.com/SmartDataAnalytics/linked-uspto-patent-data
+- https://github.com/philiplessner/USPTOAPI
+- https://github.com/blencorp/usptobdss
+- https://github.com/dduubb/uspto-wdc
+- https://github.com/thomasopsomer/uspto-parser
+- https://github.com/jerseycoder/USPTO3PS
+- https://github.com/Ethan3600/USPTO-Trademark-API
+- https://github.com/mastreips/USPTO-Datamining-Scripts
+- https://github.com/eldavojohn/uspto-pymongo-interface
+- https://github.com/xenotropic/trademark-sqlite
+- https://github.com/xuy/tms
+- https://github.com/majuscule/patent-api
+- https://github.com/chillSen/USPTO-XML2RDF-Tool
+- https://github.com/ThomasHeliase/PatentData
+- https://github.com/mattwang44/USPTO-PatFT-Web-Crawler
+- https://github.com/pgerlich/USPTO
+- https://github.com/doolin/patentsnapper
+- https://github.com/funginstitute/patentserver
+- https://github.com/CSSIP-AIR/PatentsProcessor
+- https://github.com/CSSIP-AIR/PatentsView-APIWrapper
+- https://github.com/asalaiz1108/PatentsView-APIWrapper-APIwrapper
+- https://github.com/aniemerg/Patent-Tools
+- https://github.com/dan457/pypatent
+- https://github.com/edskal
+
+Analytics
+=========
+- https://github.com/funginstitute/patentprocessor
+- https://github.com/iamlemec/patents
+
+Fun
+===
+- https://github.com/antiboredom/patent-generator

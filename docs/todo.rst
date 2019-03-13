@@ -15,6 +15,7 @@ Core
 - [x] Release on PyPI using twine: https://pypi.python.org/pypi/twine
 - [x] Document the "search" API
 - [o] How to search for date ranges?
+- [o] Use different color for documentation
 
 - [o] Implement paging for search mode
 - [o] Implement PedsSearchDocument, canonization and comparison
