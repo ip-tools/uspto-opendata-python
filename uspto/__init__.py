@@ -1,2 +1,2 @@
 """uspto-opendata-python is a client library for accessing the USPTO Open Data APIs"""
-__version__ = '0.8.2'
+__version__ = '0.8.3'

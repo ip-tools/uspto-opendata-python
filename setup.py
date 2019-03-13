@@ -22,7 +22,7 @@ test_requires = [
 ]
 
 setup(name='uspto-opendata-python',
-      version='0.8.2',
+      version='0.8.3',
       description='uspto-opendata-python is a client library for accessing the USPTO Open Data APIs',
       long_description=README,
       license="MIT",
