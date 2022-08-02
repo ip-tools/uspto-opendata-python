@@ -2,7 +2,7 @@
 # Common
 # ------
 
-$(eval venvpath     := .venv_util)
+$(eval venvpath     := .venv)
 $(eval pip          := $(venvpath)/bin/pip)
 $(eval python       := $(venvpath)/bin/python)
 $(eval bumpversion  := $(venvpath)/bin/bumpversion)
@@ -11,7 +11,7 @@ $(eval sphinx       := $(venvpath)/bin/sphinx-build)
 $(eval nose2        := $(venvpath)/bin/nose2)
 
 setup-virtualenv:
-	@test -e $(python) || `command -v virtualenv` --python=`command -v python` --no-site-packages $(venvpath)
+	@test -e $(python) || python3 -m venv $(venvpath)
 
 
 # -------
@@ -19,7 +19,7 @@ setup-virtualenv:
 # -------
 
 setup-release: setup-virtualenv
-	$(pip) install --quiet --requirement requirements-release.txt
+	$(pip) install --requirement requirements-release.txt
 
 bumpversion:
 	$(bumpversion) $(bump)
@@ -42,7 +42,7 @@ release: setup-release bumpversion push sdist upload
 # -------------
 
 setup-docs: setup-virtualenv
-	$(pip) install --quiet --requirement requirements-docs.txt
+	$(pip) install --requirement requirements-docs.txt
 
 docs-html: setup-docs
 	touch docs/index.rst
@@ -52,6 +52,10 @@ docs-html: setup-docs
 # -------
 # Project
 # -------
+
+test: setup-virtualenv
+	$(pip) install --editable=.[test]
+	$(python) setup.py test
 
 mkvar:
 	mkdir -p var/lib

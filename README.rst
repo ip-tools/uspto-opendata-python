@@ -51,7 +51,7 @@ If you know your way around Python, installing this software is really easy::
 
 Please refer to the `virtualenv`_ page about further guidelines how to install and use this software.
 
-.. _virtualenv: https://github.com/ip-tools/uspto-opendata-python/blob/master/docs/virtualenv.rst
+.. _virtualenv: https://github.com/ip-tools/uspto-opendata-python/blob/main/docs/virtualenv.rst
 
 
 Usage

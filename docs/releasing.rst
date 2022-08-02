@@ -2,13 +2,6 @@
 Releasing this software
 #######################
 
-Setup prerequisites
-===================
-::
-
-    pip install -e .[release]
-
-
 Cut a release
 =============
 ::

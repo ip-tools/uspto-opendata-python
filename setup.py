@@ -6,16 +6,16 @@ README = open(os.path.join(here, 'README.rst')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.rst')).read()
 
 requires = [
-    'celery==4.1.0',
-    'requests==2.18.4',
-    'redis==2.10.6',
-    'beautifulsoup4==4.6.0',
-    'docopt==0.6.2',
-    'pathvalidate==0.16.2',
-    'lxml==4.2.5',
-    'jsonpointer==1.12',
+    'celery<5',
+    'requests<3',
+    'redis<3',
+    'beautifulsoup4<5',
+    'docopt<1',
+    'pathvalidate<1',
+    'lxml<5',
+    'jsonpointer<2',
     'clint==0.5.1',
-    'awesome-slugify==1.6.5',
+    'awesome-slugify<2',
 ]
 
 test_requires = [
@@ -58,22 +58,16 @@ setup(name='uspto-opendata-python',
       package_data={
       },
       zip_safe=False,
-      test_suite='nose.collector',
+      test_suite='nose2.collector.collector',
       install_requires=requires,
       tests_require=test_requires,
       extras_require={
-          'release': [
-              'bumpversion==0.5.3',
-              'twine==1.9.1',
-              'keyring==10.4.0',
-          ],
-          'documentation': [
-              'Sphinx==1.6.4',
-              'sphinx_rtd_theme==0.2.5b1',
+          'test': [
+              'nose2',
           ],
       },
       dependency_links=[
-        'https://github.com/kennethreitz/clint/tarball/9d3693d6#egg=clint-0.5.1',
+        'https://github.com/kennethreitz-archive/clint/tarball/9d3693d6#egg=clint-0.5.1',
       ],
 
       entry_points={
